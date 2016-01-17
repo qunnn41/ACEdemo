@@ -22,6 +22,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  *   <li>{@link moon.nju.edu.cn.demo.impl.ServerImpl#getIP <em>IP</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.impl.ServerImpl#getType <em>Type</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.impl.ServerImpl#getUsername <em>Username</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.impl.ServerImpl#getPassword <em>Password</em>}</li>
  * </ul>
  *
  * @generated
@@ -66,6 +68,46 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 	 * @ordered
 	 */
 	protected String type = TYPE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getUsername() <em>Username</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getUsername()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String USERNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getUsername() <em>Username</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getUsername()
+	 * @generated
+	 * @ordered
+	 */
+	protected String username = USERNAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getPassword() <em>Password</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPassword()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PASSWORD_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getPassword() <em>Password</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPassword()
+	 * @generated
+	 * @ordered
+	 */
+	protected String password = PASSWORD_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,6 +175,48 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setUsername(String newUsername) {
+		String oldUsername = username;
+		username = newUsername;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.SERVER__USERNAME, oldUsername, username));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPassword(String newPassword) {
+		String oldPassword = password;
+		password = newPassword;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.SERVER__PASSWORD, oldPassword, password));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -140,6 +224,10 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 				return getIP();
 			case DemoPackage.SERVER__TYPE:
 				return getType();
+			case DemoPackage.SERVER__USERNAME:
+				return getUsername();
+			case DemoPackage.SERVER__PASSWORD:
+				return getPassword();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -157,6 +245,12 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 				return;
 			case DemoPackage.SERVER__TYPE:
 				setType((String)newValue);
+				return;
+			case DemoPackage.SERVER__USERNAME:
+				setUsername((String)newValue);
+				return;
+			case DemoPackage.SERVER__PASSWORD:
+				setPassword((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -176,6 +270,12 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 			case DemoPackage.SERVER__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
+			case DemoPackage.SERVER__USERNAME:
+				setUsername(USERNAME_EDEFAULT);
+				return;
+			case DemoPackage.SERVER__PASSWORD:
+				setPassword(PASSWORD_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -192,6 +292,10 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 				return IP_EDEFAULT == null ? ip != null : !IP_EDEFAULT.equals(ip);
 			case DemoPackage.SERVER__TYPE:
 				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+			case DemoPackage.SERVER__USERNAME:
+				return USERNAME_EDEFAULT == null ? username != null : !USERNAME_EDEFAULT.equals(username);
+			case DemoPackage.SERVER__PASSWORD:
+				return PASSWORD_EDEFAULT == null ? password != null : !PASSWORD_EDEFAULT.equals(password);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -210,6 +314,10 @@ public class ServerImpl extends MinimalEObjectImpl.Container implements Server {
 		result.append(ip);
 		result.append(", type: ");
 		result.append(type);
+		result.append(", username: ");
+		result.append(username);
+		result.append(", password: ");
+		result.append(password);
 		result.append(')');
 		return result.toString();
 	}

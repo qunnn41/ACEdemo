@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Singleton;
-import javax.swing.text.html.HTMLDocument.Iterator;
 
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
@@ -31,18 +30,19 @@ import com.google.inject.TypeLiteral;
 
 import moon.nju.edu.cn.demo.Server;
 
+@SuppressWarnings("deprecation")
 public class ChefTool {
+	private static ChefTool chefTool = null;
 	ChefContext chefContext = null;
 	ChefService chefService = null;
 	SshClient.Factory sshFactory = null;
 	
 	@Singleton
-	public ChefTool getInstance() {
-		if (chefContext == null) {
-			
+	public static ChefTool getInstance() throws Exception {
+		if (chefTool == null) {
+			chefTool = new ChefTool();
 		}
-		
-		return this;
+		return chefTool;
 	}
 	
 	private ChefTool() throws Exception {
@@ -72,7 +72,7 @@ public class ChefTool {
     			.injector().getInstance(Key.get(new TypeLiteral<SshClient.Factory>() {}));
 	}
 	
-	public int install(Server server, String username, String password, String recipe) {
+	public int install(Server server, String recipe) {
 		List<String> runlist = null;
 		Iterable<? extends CookbookVersion> cookbookVersions = chefService.listCookbookVersions();
 		for (CookbookVersion cookbook : cookbookVersions) {
@@ -95,12 +95,12 @@ public class ChefTool {
     			 */
 //    			.sslVerifyMode(SSLVerifyMode.NONE)
     			.build();
-    	chefService.updateBootstrapConfigForGroup(recipe, bootstrapConfig);
-    	Statement bootstrap = chefService.createBootstrapScriptForGroup(recipe);
+    	chefService.updateBootstrapConfigForGroup(server.getIP(), bootstrapConfig);
+    	Statement bootstrap = chefService.createBootstrapScriptForGroup(server.getIP());
     	
     	SshClient sshClient = sshFactory.create(HostAndPort.fromParts(server.getIP(), 22), 
     			LoginCredentials.builder().authenticateSudo(true)
-    			.user(username).password(password)
+    			.user(server.getUsername()).password(server.getPassword())
     			.build());
     	sshClient.connect();
 
@@ -114,10 +114,11 @@ public class ChefTool {
     		rawScript = "sudo chmod 777 /etc/chef/client.rb \n" + rawScript;
     		
     		//need ssl_verify_mode to be none, bug in 1.9.1
-    		rawScript += "echo \"ssl_verify_mode :verify_none\" >> /etc/chef/client.rb \n";
-    		rawScript += "sudo chef-client -j /etc/chef/first-boot.json \n";
+    		rawScript = rawScript.replace("chef-client -j /etc/chef/first-boot.json", 
+    				"echo \"ssl_verify_mode :verify_none\" >> /etc/chef/client.rb \n"
+    				+ "sudo chef-client -j /etc/chef/first-boot.json \n");
     		
-    		System.out.println("Raw script rendered.\n\n" + rawScript + "\n\n");
+//    		System.out.println("Raw script rendered.\n\n" + rawScript + "\n\n");
     		System.out.println("Bootstrap script executed...");
     		
     		/**
@@ -134,7 +135,7 @@ public class ChefTool {
         		System.out.println(result.toString());
     		}
     		*/
-    		res = result.getExitStatus();
+//    		res = result.getExitStatus();
     	} catch (Throwable t) {
     		System.out.println("Exception: " + t.getMessage());
     	} finally {

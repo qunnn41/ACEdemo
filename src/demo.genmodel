@@ -9,6 +9,8 @@
     <genClasses ecoreClass="demo.ecore#//Server">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/IP"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/username"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/password"/>
     </genClasses>
     <genClasses ecoreClass="demo.ecore#//Software">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/name"/>

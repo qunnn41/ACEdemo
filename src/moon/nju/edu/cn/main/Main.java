@@ -1,5 +1,6 @@
 package moon.nju.edu.cn.main;
 
+import moon.nju.edu.cn.chef.ChefTool;
 import moon.nju.edu.cn.demo.ApacheContainer;
 import moon.nju.edu.cn.demo.DemoFactory;
 import moon.nju.edu.cn.demo.MySQL;
@@ -11,7 +12,7 @@ public class Main {
 	/**
 	 * parameters for server_1
 	 */
-	private String serverIp_1 = "10.0.0.1";
+	private String serverIp_1 = "192.168.1.19";
 	private String serverType_1 = "ubuntu";
 	private String serverUser_1 = "vagrant";
 	private String serverPass_1 = "vagrant";
@@ -19,7 +20,7 @@ public class Main {
 	/**
 	 * parameters for server_2
 	 */
-	private String serverIp_2 = "10.0.0.2";
+	private String serverIp_2 = "192.168.1.14";
 	private String serverType_2 = "centos";
 	private String serverUser_2 = "vagrant";
 	private String serverPass_2 = "vagrant";
@@ -76,6 +77,11 @@ public class Main {
 		webApp.setDependOn(phpApp);
 		webApp.setConnectTo(mysqlApp);
 		
+		mysqlApp.setName(mysqlName);
+		mysqlApp.setVersion(mysqlVersion);
+		mysqlApp.setUsername(mysqlUser);
+		mysqlApp.setPassword(mysqlPass);
+		
 		phpApp.getServers().add(server_1);
 		webApp.getServers().add(server_1);
 		apacheApp.getServers().add(server_2);
@@ -87,8 +93,13 @@ public class Main {
 	private void createInstance() {
 		server_1.setIP(serverIp_1);
 		server_1.setType(serverType_1);
+		server_1.setUsername(serverUser_1);
+		server_1.setPassword(serverPass_1);
+		
 		server_2.setIP(serverIp_2);
 		server_2.setType(serverType_2);
+		server_2.setUsername(serverUser_2);
+		server_2.setPassword(serverPass_2);
 		
 		apacheApp.setListenPort(apachePort);
 		apacheApp.setName(apacheName);
@@ -110,12 +121,19 @@ public class Main {
 	
 	/**
 	 * setup according to the result of Alloy
+	 * @throws Exception 
 	 */
-	private void run() {
+	private void run() throws Exception {
+		ChefTool chefTool = ChefTool.getInstance();
+
+		chefTool.install(server_2, "web_apache");
+		chefTool.install(server_2, "web_php");
 		
+		System.out.println("apache done!!!\n\n");
+		chefTool.install(server_1, "web_db");
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Main m = new Main();
 		m.init();
 		m.createInstance();

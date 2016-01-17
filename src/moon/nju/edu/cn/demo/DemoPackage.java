@@ -85,13 +85,31 @@ public interface DemoPackage extends EPackage {
 	int SERVER__TYPE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Username</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SERVER__USERNAME = 2;
+
+	/**
+	 * The feature id for the '<em><b>Password</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SERVER__PASSWORD = 3;
+
+	/**
 	 * The number of structural features of the '<em>Server</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SERVER_FEATURE_COUNT = 2;
+	int SERVER_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Server</em>' class.
@@ -465,6 +483,28 @@ public interface DemoPackage extends EPackage {
 	EAttribute getServer_Type();
 
 	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getUsername <em>Username</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Username</em>'.
+	 * @see moon.nju.edu.cn.demo.Server#getUsername()
+	 * @see #getServer()
+	 * @generated
+	 */
+	EAttribute getServer_Username();
+
+	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getPassword <em>Password</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Password</em>'.
+	 * @see moon.nju.edu.cn.demo.Server#getPassword()
+	 * @see #getServer()
+	 * @generated
+	 */
+	EAttribute getServer_Password();
+
+	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.Software <em>Software</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -661,6 +701,22 @@ public interface DemoPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute SERVER__TYPE = eINSTANCE.getServer_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Username</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SERVER__USERNAME = eINSTANCE.getServer_Username();
+
+		/**
+		 * The meta object literal for the '<em><b>Password</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SERVER__PASSWORD = eINSTANCE.getServer_Password();
 
 		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.SoftwareImpl <em>Software</em>}' class.

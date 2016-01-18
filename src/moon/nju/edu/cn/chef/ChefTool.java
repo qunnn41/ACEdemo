@@ -119,10 +119,8 @@ public class ChefTool {
     		rawScript = "sudo chmod 777 /etc/chef \n" + rawScript;
     		rawScript = "sudo chmod 777 /etc/chef/client.rb \n" + rawScript;
     		
-    		//need ssl_verify_mode to be none, bug in 1.9.1
-//    		rawScript = rawScript.replace("chef-client -j /etc/chef/first-boot.json", 
-//    				"echo \"ssl_verify_mode :verify_none\" >> /etc/chef/client.rb \n"
-//    				+ "sudo chef-client -j /etc/chef/first-boot.json \n");
+    		rawScript = rawScript.replace("chef-client", "sudo chef-client");
+    		rawScript = rawScript.replace("cat > ", "sudo cat > ");
     		
 //    		System.out.println("Raw script rendered.\n\n" + rawScript + "\n\n");
     		System.out.println("Bootstrap script executed...");
@@ -131,8 +129,8 @@ public class ChefTool {
     		 * the shell might not succeed during one process, that is the chef problem
     		 * u can run "sudo chef-client -j /etc/chef/first-boot.json" until it is successful
     		 */
-//    		ExecResponse result = sshClient.exec(rawScript);
-//    		System.out.println(result.toString());
+    		ExecResponse result = sshClient.exec(rawScript);
+    		System.out.println(result.toString());
     		
     		/**
     		 * another solution
@@ -141,7 +139,7 @@ public class ChefTool {
         		System.out.println(result.toString());
     		}
     		*/
-//    		res = result.getExitStatus();
+    		res = result.getExitStatus();
     	} catch (Throwable t) {
     		System.out.println("Exception: " + t.getMessage());
     	} finally {

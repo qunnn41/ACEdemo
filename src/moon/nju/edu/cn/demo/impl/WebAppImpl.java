@@ -4,7 +4,6 @@ package moon.nju.edu.cn.demo.impl;
 
 import moon.nju.edu.cn.demo.DemoPackage;
 import moon.nju.edu.cn.demo.MySQL;
-import moon.nju.edu.cn.demo.PHPContainer;
 import moon.nju.edu.cn.demo.WebApp;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -23,7 +22,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * </p>
  * <ul>
  *   <li>{@link moon.nju.edu.cn.demo.impl.WebAppImpl#getConnectTo <em>Connect To</em>}</li>
- *   <li>{@link moon.nju.edu.cn.demo.impl.WebAppImpl#getDependOn <em>Depend On</em>}</li>
  * </ul>
  *
  * @generated
@@ -38,16 +36,6 @@ public class WebAppImpl extends SoftwareImpl implements WebApp {
 	 * @ordered
 	 */
 	protected MySQL connectTo;
-
-	/**
-	 * The cached value of the '{@link #getDependOn() <em>Depend On</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDependOn()
-	 * @generated
-	 * @ordered
-	 */
-	protected PHPContainer dependOn;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -111,53 +99,12 @@ public class WebAppImpl extends SoftwareImpl implements WebApp {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PHPContainer getDependOn() {
-		if (dependOn != null && dependOn.eIsProxy()) {
-			InternalEObject oldDependOn = (InternalEObject)dependOn;
-			dependOn = (PHPContainer)eResolveProxy(oldDependOn);
-			if (dependOn != oldDependOn) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DemoPackage.WEB_APP__DEPEND_ON, oldDependOn, dependOn));
-			}
-		}
-		return dependOn;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public PHPContainer basicGetDependOn() {
-		return dependOn;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDependOn(PHPContainer newDependOn) {
-		PHPContainer oldDependOn = dependOn;
-		dependOn = newDependOn;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.WEB_APP__DEPEND_ON, oldDependOn, dependOn));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DemoPackage.WEB_APP__CONNECT_TO:
 				if (resolve) return getConnectTo();
 				return basicGetConnectTo();
-			case DemoPackage.WEB_APP__DEPEND_ON:
-				if (resolve) return getDependOn();
-				return basicGetDependOn();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -172,9 +119,6 @@ public class WebAppImpl extends SoftwareImpl implements WebApp {
 		switch (featureID) {
 			case DemoPackage.WEB_APP__CONNECT_TO:
 				setConnectTo((MySQL)newValue);
-				return;
-			case DemoPackage.WEB_APP__DEPEND_ON:
-				setDependOn((PHPContainer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -191,9 +135,6 @@ public class WebAppImpl extends SoftwareImpl implements WebApp {
 			case DemoPackage.WEB_APP__CONNECT_TO:
 				setConnectTo((MySQL)null);
 				return;
-			case DemoPackage.WEB_APP__DEPEND_ON:
-				setDependOn((PHPContainer)null);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -208,8 +149,6 @@ public class WebAppImpl extends SoftwareImpl implements WebApp {
 		switch (featureID) {
 			case DemoPackage.WEB_APP__CONNECT_TO:
 				return connectTo != null;
-			case DemoPackage.WEB_APP__DEPEND_ON:
-				return dependOn != null;
 		}
 		return super.eIsSet(featureID);
 	}

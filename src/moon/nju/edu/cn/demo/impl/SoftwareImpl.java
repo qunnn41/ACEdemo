@@ -14,6 +14,7 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -30,6 +31,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getName <em>Name</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getServers <em>Servers</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getDependOn <em>Depend On</em>}</li>
  * </ul>
  *
  * @generated
@@ -76,14 +78,24 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 	protected String version = VERSION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getServers() <em>Servers</em>}' reference list.
+	 * The cached value of the '{@link #getServers() <em>Servers</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getServers()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Server> servers;
+	protected Server servers;
+
+	/**
+	 * The cached value of the '{@link #getDependOn() <em>Depend On</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDependOn()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Software> dependOn;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -151,11 +163,49 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Server> getServers() {
-		if (servers == null) {
-			servers = new EObjectResolvingEList<Server>(Server.class, this, DemoPackage.SOFTWARE__SERVERS);
+	public Server getServers() {
+		if (servers != null && servers.eIsProxy()) {
+			InternalEObject oldServers = (InternalEObject)servers;
+			servers = (Server)eResolveProxy(oldServers);
+			if (servers != oldServers) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DemoPackage.SOFTWARE__SERVERS, oldServers, servers));
+			}
 		}
 		return servers;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Server basicGetServers() {
+		return servers;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setServers(Server newServers) {
+		Server oldServers = servers;
+		servers = newServers;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.SOFTWARE__SERVERS, oldServers, servers));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<Software> getDependOn() {
+		if (dependOn == null) {
+			dependOn = new EObjectResolvingEList<Software>(Software.class, this, DemoPackage.SOFTWARE__DEPEND_ON);
+		}
+		return dependOn;
 	}
 
 	/**
@@ -171,7 +221,10 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 			case DemoPackage.SOFTWARE__VERSION:
 				return getVersion();
 			case DemoPackage.SOFTWARE__SERVERS:
-				return getServers();
+				if (resolve) return getServers();
+				return basicGetServers();
+			case DemoPackage.SOFTWARE__DEPEND_ON:
+				return getDependOn();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -192,8 +245,11 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 				setVersion((String)newValue);
 				return;
 			case DemoPackage.SOFTWARE__SERVERS:
-				getServers().clear();
-				getServers().addAll((Collection<? extends Server>)newValue);
+				setServers((Server)newValue);
+				return;
+			case DemoPackage.SOFTWARE__DEPEND_ON:
+				getDependOn().clear();
+				getDependOn().addAll((Collection<? extends Software>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -214,7 +270,10 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 				setVersion(VERSION_EDEFAULT);
 				return;
 			case DemoPackage.SOFTWARE__SERVERS:
-				getServers().clear();
+				setServers((Server)null);
+				return;
+			case DemoPackage.SOFTWARE__DEPEND_ON:
+				getDependOn().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -233,7 +292,9 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 			case DemoPackage.SOFTWARE__VERSION:
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case DemoPackage.SOFTWARE__SERVERS:
-				return servers != null && !servers.isEmpty();
+				return servers != null;
+			case DemoPackage.SOFTWARE__DEPEND_ON:
+				return dependOn != null && !dependOn.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

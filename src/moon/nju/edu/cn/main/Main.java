@@ -53,38 +53,28 @@ public class Main {
 	private String webVersion = "1.0";
 	
 	
-	
+	/**
+	 * instance of ecore
+	 */
 	DemoFactory factory = DemoFactory.eINSTANCE;
-	Server server_1;
-	Server server_2;
-	ApacheContainer apacheApp;
-	PHPContainer phpApp;
-	MySQL mysqlApp;
-	WebApp webApp;
+	Server server_1 = factory.createServer();
+	Server server_2 = factory.createServer();
+	ApacheContainer apacheApp = factory.createApacheContainer();
+	PHPContainer phpApp = factory.createPHPContainer();;
+	MySQL mysqlApp = factory.createMySQL();
+	WebApp webApp = factory.createWebApp();
 	
 	/**
 	 * Initiation
 	 */
 	private void init() {
-		server_1 = factory.createServer();
-		server_2 = factory.createServer();
-		apacheApp = factory.createApacheContainer();
-		phpApp = factory.createPHPContainer();
-		mysqlApp = factory.createMySQL();
-		webApp = factory.createWebApp();
-		
-		phpApp.setDependOn(apacheApp);
-		webApp.setDependOn(phpApp);
+		phpApp.getDependOn().add(apacheApp);
+		webApp.getDependOn().add(phpApp);
 		webApp.setConnectTo(mysqlApp);
 		
-		mysqlApp.setName(mysqlName);
-		mysqlApp.setVersion(mysqlVersion);
-		mysqlApp.setUsername(mysqlUser);
-		mysqlApp.setPassword(mysqlPass);
-		
-		phpApp.getServers().add(server_1);
-		webApp.getServers().add(server_1);
-		apacheApp.getServers().add(server_2);
+		webApp.setServers(server_1);
+		apacheApp.setServers(server_2);
+		phpApp.setServers(server_2);
 	}
 	
 	/**
@@ -110,6 +100,12 @@ public class Main {
 		
 		webApp.setName(webName);
 		webApp.setVersion(webVersion);
+		
+		
+		mysqlApp.setName(mysqlName);
+		mysqlApp.setVersion(mysqlVersion);
+		mysqlApp.setUsername(mysqlUser);
+		mysqlApp.setPassword(mysqlPass);
 	}
 	
 	/**
@@ -126,8 +122,9 @@ public class Main {
 	private void run() throws Exception {
 		ChefTool chefTool = ChefTool.getInstance();
 
-		chefTool.install(server_2, "web_apache");
-		chefTool.install(server_2, "web_php");
+//		chefTool.install(server_2, "web_apache");
+//		chefTool.install(server_2, "web_php");
+//		chefTool.install(server_2, "web_app");
 		
 		System.out.println("apache done!!!\n\n");
 		chefTool.install(server_1, "web_db");

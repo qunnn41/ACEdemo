@@ -214,6 +214,15 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getSoftware_DependOn() {
+		return (EReference)softwareEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getApacheContainer() {
 		return apacheContainerEClass;
 	}
@@ -241,15 +250,6 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getPHPContainer_DependOn() {
-		return (EReference)phpContainerEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getWebApp() {
 		return webAppEClass;
 	}
@@ -261,15 +261,6 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 */
 	public EReference getWebApp_ConnectTo() {
 		return (EReference)webAppEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getWebApp_DependOn() {
-		return (EReference)webAppEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -337,16 +328,15 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 		createEAttribute(softwareEClass, SOFTWARE__NAME);
 		createEAttribute(softwareEClass, SOFTWARE__VERSION);
 		createEReference(softwareEClass, SOFTWARE__SERVERS);
+		createEReference(softwareEClass, SOFTWARE__DEPEND_ON);
 
 		apacheContainerEClass = createEClass(APACHE_CONTAINER);
 		createEAttribute(apacheContainerEClass, APACHE_CONTAINER__LISTEN_PORT);
 
 		phpContainerEClass = createEClass(PHP_CONTAINER);
-		createEReference(phpContainerEClass, PHP_CONTAINER__DEPEND_ON);
 
 		webAppEClass = createEClass(WEB_APP);
 		createEReference(webAppEClass, WEB_APP__CONNECT_TO);
-		createEReference(webAppEClass, WEB_APP__DEPEND_ON);
 
 		mySQLEClass = createEClass(MY_SQL);
 		createEAttribute(mySQLEClass, MY_SQL__PASSWORD);
@@ -396,17 +386,16 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 		initEClass(softwareEClass, Software.class, "Software", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSoftware_Name(), ecorePackage.getEString(), "name", null, 0, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSoftware_Version(), ecorePackage.getEString(), "version", null, 0, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getSoftware_Servers(), this.getServer(), null, "servers", null, 0, -1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSoftware_Servers(), this.getServer(), null, "servers", null, 1, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSoftware_DependOn(), this.getSoftware(), null, "dependOn", null, 0, -1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(apacheContainerEClass, ApacheContainer.class, "ApacheContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getApacheContainer_ListenPort(), ecorePackage.getEInt(), "listenPort", null, 0, 1, ApacheContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(phpContainerEClass, PHPContainer.class, "PHPContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getPHPContainer_DependOn(), this.getApacheContainer(), null, "dependOn", null, 0, 1, PHPContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(webAppEClass, WebApp.class, "WebApp", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getWebApp_ConnectTo(), this.getMySQL(), null, "connectTo", null, 1, 1, WebApp.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getWebApp_DependOn(), this.getPHPContainer(), null, "dependOn", null, 1, 1, WebApp.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(mySQLEClass, MySQL.class, "MySQL", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMySQL_Password(), ecorePackage.getEString(), "password", null, 0, 1, MySQL.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

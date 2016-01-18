@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link moon.nju.edu.cn.demo.Software#getName <em>Name</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Software#getVersion <em>Version</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Software#getServers <em>Servers</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Software#getDependOn <em>Depend On</em>}</li>
  * </ul>
  *
  * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware()
@@ -78,19 +79,45 @@ public interface Software extends EObject {
 	void setVersion(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Servers</b></em>' reference list.
-	 * The list contents are of type {@link moon.nju.edu.cn.demo.Server}.
+	 * Returns the value of the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Servers</em>' reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Servers</em>' reference list.
+	 * @return the value of the '<em>Servers</em>' reference.
+	 * @see #setServers(Server)
 	 * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware_Servers()
+	 * @model required="true"
+	 * @generated
+	 */
+	Server getServers();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Software#getServers <em>Servers</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Servers</em>' reference.
+	 * @see #getServers()
+	 * @generated
+	 */
+	void setServers(Server value);
+
+	/**
+	 * Returns the value of the '<em><b>Depend On</b></em>' reference list.
+	 * The list contents are of type {@link moon.nju.edu.cn.demo.Software}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Depend On</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Depend On</em>' reference list.
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware_DependOn()
 	 * @model
 	 * @generated
 	 */
-	EList<Server> getServers();
+	EList<Software> getDependOn();
 
 } // Software

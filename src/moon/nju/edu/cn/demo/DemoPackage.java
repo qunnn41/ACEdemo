@@ -149,7 +149,7 @@ public interface DemoPackage extends EPackage {
 	int SOFTWARE__VERSION = 1;
 
 	/**
-	 * The feature id for the '<em><b>Servers</b></em>' reference list.
+	 * The feature id for the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -158,13 +158,22 @@ public interface DemoPackage extends EPackage {
 	int SOFTWARE__SERVERS = 2;
 
 	/**
+	 * The feature id for the '<em><b>Depend On</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOFTWARE__DEPEND_ON = 3;
+
+	/**
 	 * The number of structural features of the '<em>Software</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOFTWARE_FEATURE_COUNT = 3;
+	int SOFTWARE_FEATURE_COUNT = 4;
 
 	/**
 	 * The number of operations of the '<em>Software</em>' class.
@@ -204,13 +213,22 @@ public interface DemoPackage extends EPackage {
 	int APACHE_CONTAINER__VERSION = SOFTWARE__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Servers</b></em>' reference list.
+	 * The feature id for the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
 	int APACHE_CONTAINER__SERVERS = SOFTWARE__SERVERS;
+
+	/**
+	 * The feature id for the '<em><b>Depend On</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int APACHE_CONTAINER__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
 	 * The feature id for the '<em><b>Listen Port</b></em>' attribute.
@@ -268,7 +286,7 @@ public interface DemoPackage extends EPackage {
 	int PHP_CONTAINER__VERSION = SOFTWARE__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Servers</b></em>' reference list.
+	 * The feature id for the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -277,13 +295,13 @@ public interface DemoPackage extends EPackage {
 	int PHP_CONTAINER__SERVERS = SOFTWARE__SERVERS;
 
 	/**
-	 * The feature id for the '<em><b>Depend On</b></em>' reference.
+	 * The feature id for the '<em><b>Depend On</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PHP_CONTAINER__DEPEND_ON = SOFTWARE_FEATURE_COUNT + 0;
+	int PHP_CONTAINER__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
 	 * The number of structural features of the '<em>PHP Container</em>' class.
@@ -292,7 +310,7 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PHP_CONTAINER_FEATURE_COUNT = SOFTWARE_FEATURE_COUNT + 1;
+	int PHP_CONTAINER_FEATURE_COUNT = SOFTWARE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>PHP Container</em>' class.
@@ -332,13 +350,22 @@ public interface DemoPackage extends EPackage {
 	int WEB_APP__VERSION = SOFTWARE__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Servers</b></em>' reference list.
+	 * The feature id for the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
 	int WEB_APP__SERVERS = SOFTWARE__SERVERS;
+
+	/**
+	 * The feature id for the '<em><b>Depend On</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int WEB_APP__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
 	 * The feature id for the '<em><b>Connect To</b></em>' reference.
@@ -350,22 +377,13 @@ public interface DemoPackage extends EPackage {
 	int WEB_APP__CONNECT_TO = SOFTWARE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Depend On</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int WEB_APP__DEPEND_ON = SOFTWARE_FEATURE_COUNT + 1;
-
-	/**
 	 * The number of structural features of the '<em>Web App</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int WEB_APP_FEATURE_COUNT = SOFTWARE_FEATURE_COUNT + 2;
+	int WEB_APP_FEATURE_COUNT = SOFTWARE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Web App</em>' class.
@@ -405,13 +423,22 @@ public interface DemoPackage extends EPackage {
 	int MY_SQL__VERSION = SOFTWARE__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Servers</b></em>' reference list.
+	 * The feature id for the '<em><b>Servers</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
 	int MY_SQL__SERVERS = SOFTWARE__SERVERS;
+
+	/**
+	 * The feature id for the '<em><b>Depend On</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MY_SQL__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
 	 * The feature id for the '<em><b>Password</b></em>' attribute.
@@ -537,15 +564,26 @@ public interface DemoPackage extends EPackage {
 	EAttribute getSoftware_Version();
 
 	/**
-	 * Returns the meta object for the reference list '{@link moon.nju.edu.cn.demo.Software#getServers <em>Servers</em>}'.
+	 * Returns the meta object for the reference '{@link moon.nju.edu.cn.demo.Software#getServers <em>Servers</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Servers</em>'.
+	 * @return the meta object for the reference '<em>Servers</em>'.
 	 * @see moon.nju.edu.cn.demo.Software#getServers()
 	 * @see #getSoftware()
 	 * @generated
 	 */
 	EReference getSoftware_Servers();
+
+	/**
+	 * Returns the meta object for the reference list '{@link moon.nju.edu.cn.demo.Software#getDependOn <em>Depend On</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Depend On</em>'.
+	 * @see moon.nju.edu.cn.demo.Software#getDependOn()
+	 * @see #getSoftware()
+	 * @generated
+	 */
+	EReference getSoftware_DependOn();
 
 	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.ApacheContainer <em>Apache Container</em>}'.
@@ -579,17 +617,6 @@ public interface DemoPackage extends EPackage {
 	EClass getPHPContainer();
 
 	/**
-	 * Returns the meta object for the reference '{@link moon.nju.edu.cn.demo.PHPContainer#getDependOn <em>Depend On</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Depend On</em>'.
-	 * @see moon.nju.edu.cn.demo.PHPContainer#getDependOn()
-	 * @see #getPHPContainer()
-	 * @generated
-	 */
-	EReference getPHPContainer_DependOn();
-
-	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.WebApp <em>Web App</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -609,17 +636,6 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getWebApp_ConnectTo();
-
-	/**
-	 * Returns the meta object for the reference '{@link moon.nju.edu.cn.demo.WebApp#getDependOn <em>Depend On</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Depend On</em>'.
-	 * @see moon.nju.edu.cn.demo.WebApp#getDependOn()
-	 * @see #getWebApp()
-	 * @generated
-	 */
-	EReference getWebApp_DependOn();
 
 	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.MySQL <em>My SQL</em>}'.
@@ -745,12 +761,20 @@ public interface DemoPackage extends EPackage {
 		EAttribute SOFTWARE__VERSION = eINSTANCE.getSoftware_Version();
 
 		/**
-		 * The meta object literal for the '<em><b>Servers</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Servers</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference SOFTWARE__SERVERS = eINSTANCE.getSoftware_Servers();
+
+		/**
+		 * The meta object literal for the '<em><b>Depend On</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SOFTWARE__DEPEND_ON = eINSTANCE.getSoftware_DependOn();
 
 		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.ApacheContainerImpl <em>Apache Container</em>}' class.
@@ -781,14 +805,6 @@ public interface DemoPackage extends EPackage {
 		EClass PHP_CONTAINER = eINSTANCE.getPHPContainer();
 
 		/**
-		 * The meta object literal for the '<em><b>Depend On</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PHP_CONTAINER__DEPEND_ON = eINSTANCE.getPHPContainer_DependOn();
-
-		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.WebAppImpl <em>Web App</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -805,14 +821,6 @@ public interface DemoPackage extends EPackage {
 		 * @generated
 		 */
 		EReference WEB_APP__CONNECT_TO = eINSTANCE.getWebApp_ConnectTo();
-
-		/**
-		 * The meta object literal for the '<em><b>Depend On</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference WEB_APP__DEPEND_ON = eINSTANCE.getWebApp_DependOn();
 
 		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.MySQLImpl <em>My SQL</em>}' class.

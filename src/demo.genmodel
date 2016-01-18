@@ -16,16 +16,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/version"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//Software/servers"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//Software/dependOn"/>
     </genClasses>
     <genClasses ecoreClass="demo.ecore#//ApacheContainer">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//ApacheContainer/listenPort"/>
     </genClasses>
-    <genClasses ecoreClass="demo.ecore#//PHPContainer">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//PHPContainer/dependOn"/>
-    </genClasses>
+    <genClasses ecoreClass="demo.ecore#//PHPContainer"/>
     <genClasses ecoreClass="demo.ecore#//WebApp">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//WebApp/connectTo"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//WebApp/dependOn"/>
     </genClasses>
     <genClasses ecoreClass="demo.ecore#//MySQL">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//MySQL/password"/>

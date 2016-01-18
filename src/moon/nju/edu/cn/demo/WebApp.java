@@ -13,7 +13,6 @@ package moon.nju.edu.cn.demo;
  * </p>
  * <ul>
  *   <li>{@link moon.nju.edu.cn.demo.WebApp#getConnectTo <em>Connect To</em>}</li>
- *   <li>{@link moon.nju.edu.cn.demo.WebApp#getDependOn <em>Depend On</em>}</li>
  * </ul>
  *
  * @see moon.nju.edu.cn.demo.DemoPackage#getWebApp()
@@ -46,31 +45,5 @@ public interface WebApp extends Software {
 	 * @generated
 	 */
 	void setConnectTo(MySQL value);
-
-	/**
-	 * Returns the value of the '<em><b>Depend On</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Depend On</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Depend On</em>' reference.
-	 * @see #setDependOn(PHPContainer)
-	 * @see moon.nju.edu.cn.demo.DemoPackage#getWebApp_DependOn()
-	 * @model required="true"
-	 * @generated
-	 */
-	PHPContainer getDependOn();
-
-	/**
-	 * Sets the value of the '{@link moon.nju.edu.cn.demo.WebApp#getDependOn <em>Depend On</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Depend On</em>' reference.
-	 * @see #getDependOn()
-	 * @generated
-	 */
-	void setDependOn(PHPContainer value);
 
 } // WebApp

@@ -60,7 +60,7 @@ public class Main {
 	Server server_1 = factory.createServer();
 	Server server_2 = factory.createServer();
 	ApacheContainer apacheApp = factory.createApacheContainer();
-	PHPContainer phpApp = factory.createPHPContainer();;
+	PHPContainer phpApp = factory.createPHPContainer();
 	MySQL mysqlApp = factory.createMySQL();
 	WebApp webApp = factory.createWebApp();
 	
@@ -72,6 +72,11 @@ public class Main {
 		webApp.getDependOn().add(phpApp);
 		webApp.setConnectTo(mysqlApp);
 		
+		/**
+		 * @TODO
+		 * the software should not know where they should install on
+		 * this should be inferred by alloy
+		 */
 		webApp.setServers(server_1);
 		apacheApp.setServers(server_2);
 		phpApp.setServers(server_2);
@@ -101,7 +106,6 @@ public class Main {
 		webApp.setName(webName);
 		webApp.setVersion(webVersion);
 		
-		
 		mysqlApp.setName(mysqlName);
 		mysqlApp.setVersion(mysqlVersion);
 		mysqlApp.setUsername(mysqlUser);
@@ -122,9 +126,9 @@ public class Main {
 	private void run() throws Exception {
 		ChefTool chefTool = ChefTool.getInstance();
 
-//		chefTool.install(server_2, "web_apache");
-//		chefTool.install(server_2, "web_php");
-//		chefTool.install(server_2, "web_app");
+		chefTool.install(server_2, "web_apache");
+		chefTool.install(server_2, "web_php");
+		chefTool.install(server_2, "web_app");
 		
 		System.out.println("apache done!!!\n\n");
 		chefTool.install(server_1, "web_db");

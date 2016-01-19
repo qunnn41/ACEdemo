@@ -33,8 +33,8 @@ import moon.nju.edu.cn.demo.Server;
 
 public class ChefTool {
 	private static ChefTool chefTool = null;
-	ChefService chefService = null;
-	SshClient.Factory sshFactory = null;
+	final ChefService chefService;
+	final SshClient.Factory sshFactory;
 	
 	@Singleton
 	public static ChefTool getInstance() throws Exception {

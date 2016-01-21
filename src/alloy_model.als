@@ -4,7 +4,7 @@ sig Tick {}
 sig Server {}
 
 abstract sig Software {
-	installOn: Tick -> Server,
+	installOn: Tick -> lone Server,
 	dependOn: set Software,
 	connectTo: set Software
 }
@@ -27,7 +27,7 @@ fact {
 }
 
 pred init {
-	no Software.installOn[first]
+	no first.(Software.installOn)
 }
 
 pred install(software: Software, server: Server, tick: Tick) {
@@ -36,29 +36,39 @@ pred install(software: Software, server: Server, tick: Tick) {
 	software.installOn[tick] = server
 
 	//all its dependency should be installed before
-	all s : software.dependOn | some s.installOn[tick]
-	all s : software.connectTo | some s.installOn[tick]
+	all s : software.dependOn | one s.installOn[tick.prev]
+	all s : software.connectTo | one s.installOn[tick.prev]
 
 	//others should just remain
 	all s : Software - software | s.installOn[tick] = s.installOn[tick.prev] 
 }
 
 pred end {
-	all s : Software | some s.installOn[last]
+	all s : Software | one s.installOn[last]
 	all disj s1, s2 : Software | s1 in s2.dependOn implies s1.installOn[last] = s2.installOn[last]
 }
 
 pred running {
 	init
-	all t : Tick - first | 
-		one soft : Software | 
-			one server : Server | 
+	/*all t : Tick - first | 
+		some soft : Software | 
+			some server : Server | 
 				install[soft, server, t]
+*/
+    some s : Server | install[DB, s, first.next]
 	end
+}
+
+assert r {
+	running implies one Software.installOn[last]
 }
 
 /**
 number of signature is |software| + 1
 */
-run running for 2 Server, 5 Tick
+run running for exactly 2 Server, 5 Tick
+check r for exactly 2 Server, 5 Tick
+run running for 2 Server, 6 Tick
+run running for 2 Server, 7 Tick
+run running for 2 Server, 8 Tick
 

@@ -50,12 +50,10 @@ pred end {
 
 pred running {
 	init
-	/*all t : Tick - first | 
+	all t : Tick - first | 
 		some soft : Software | 
 			some server : Server | 
 				install[soft, server, t]
-*/
-    some s : Server | install[DB, s, first.next]
 	end
 }
 

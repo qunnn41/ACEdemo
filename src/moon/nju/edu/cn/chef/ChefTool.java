@@ -80,6 +80,8 @@ public class ChefTool {
 	}
 	
 	public int install(Server server, String recipe) {
+		System.out.printf("install %s on %s\n", recipe, server);
+		int m = 1; if (m == 1) return m;
 		List<String> runlist = null;
 		Iterable<? extends CookbookVersion> cookbookVersions = chefService.listCookbookVersions();
 		for (CookbookVersion cookbook : cookbookVersions) {
@@ -129,8 +131,8 @@ public class ChefTool {
     		 * the shell might not succeed during one process, that is the chef problem
     		 * u can run "sudo chef-client -j /etc/chef/first-boot.json" until it is successful
     		 */
-    		ExecResponse result = sshClient.exec(rawScript);
-    		System.out.println(result.toString());
+//    		ExecResponse result = sshClient.exec(rawScript);
+//    		System.out.println(result.toString());
     		
     		/**
     		 * another solution
@@ -139,7 +141,7 @@ public class ChefTool {
         		System.out.println(result.toString());
     		}
     		*/
-    		res = result.getExitStatus();
+//    		res = result.getExitStatus();
     	} catch (Throwable t) {
     		System.out.println("Exception: " + t.getMessage());
     	} finally {

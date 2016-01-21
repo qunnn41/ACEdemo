@@ -1,7 +1,11 @@
-package moon.nju.edu.cn.alloy;
+package moon.nju.edu.cn.kodkod;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import kodkod.ast.Decls;
 import kodkod.ast.Expression;
@@ -12,30 +16,43 @@ import kodkod.engine.Solution;
 import kodkod.engine.Solver;
 import kodkod.engine.satlab.SATFactory;
 import kodkod.instance.Bounds;
+import kodkod.instance.Instance;
+import kodkod.instance.Tuple;
 import kodkod.instance.TupleFactory;
 import kodkod.instance.TupleSet;
 import kodkod.instance.Universe;
+import moon.nju.edu.cn.demo.Server;
+import moon.nju.edu.cn.demo.Software;
 
-public class Alloy {
-	//sigs
-	private Relation Time, Software, Server;
+public class Model {
+	//signatures
+	private Relation modelTime, modelSoftware, modelServer;
 	private Relation softApache, softWeb, softDB, softPHP;
 	
 	//fields
 	private Relation tfirst, tlast, tick;
-	private Relation installOn, dependOn, connectTo;
+	private static Relation installOn, dependOn, connectTo;
 	
+	/**
+	 * store server list, software->server
+	 */
+	Map<String, String> serverOfSoft;
+	/**
+	 * store server information, server->demo.Server
+	 */
+	Map<String, Server> serverMap;
 	
 	/**
 	 * initialize signature and fields
 	 */
-	public Alloy() {
-		Time = Relation.unary("Time");
+	ArrayList<Software> softwareList;
+	public Model(ArrayList<Server> serverList, ArrayList<Software> softList) {
+		modelTime = Relation.unary("Time");
 		tfirst = Relation.unary("first");
 		tlast = Relation.unary("last");
 		tick = Relation.binary("tick");
-		Server = Relation.unary("Server");
-		Software = Relation.unary("Software");
+		modelServer = Relation.unary("Server");
+		modelSoftware = Relation.unary("Software");
 		
 		softApache = Relation.unary("Apache");
 		softWeb = Relation.unary("Web");
@@ -45,9 +62,16 @@ public class Alloy {
 		installOn = Relation.ternary("installOn");
 		dependOn = Relation.binary("dependOn");
 		connectTo = Relation.binary("connectTo");
+		
+		serverMap = new HashMap<String, Server>();
+		for (int i = 0; i < serverList.size(); ++i) {
+			serverMap.put("Server" + i, serverList.get(i));
+		}
+		
+		softwareList = new ArrayList<Software>();
+		softwareList.addAll(softList);
 	}
 	
-	@SuppressWarnings("unused")
 	private Expression next(Expression e) {
 		return e.join(tick);
 	}
@@ -72,15 +96,15 @@ public class Alloy {
 	private Formula declarations() {
 		final Formula oneSig = Formula.and(softApache.one(), softDB.one(), softPHP.one(), softWeb.one());
 		//DB + PHP + Apache + Web in Software
-		final Formula softSub = softApache.union(softDB).union(softPHP).union(softWeb).eq(Software);
+		final Formula softSub = softApache.union(softDB).union(softPHP).union(softWeb).eq(modelSoftware);
 		//no DB & PHP & Apache & Web
 		final Formula noDisj = softApache.intersection(softDB).intersection(softPHP).intersection(softWeb).no();
 		//fields about installOn, dependOn, connectTo
-		final Formula softInstallServer = installOn.in(Software.product(Time).product(Server));
-		final Formula softDepSoft = dependOn.in(Software.product(Software));
-		final Formula softConnSoft = connectTo.in(Software.product(Software));
+		final Formula softInstallServer = installOn.in(modelSoftware.product(modelTime).product(modelServer));
+		final Formula softDepSoft = dependOn.in(modelSoftware.product(modelSoftware));
+		final Formula softConnSoft = connectTo.in(modelSoftware.product(modelSoftware));
 		//tick is a total ordering on time
-		final Formula totalOrder = tick.totalOrder(Time, tfirst, tlast);
+		final Formula totalOrder = tick.totalOrder(modelTime, tfirst, tlast);
 		return Formula.and(oneSig, softSub, noDisj, totalOrder,
 				softConnSoft, softDepSoft, softInstallServer);
 	}
@@ -102,7 +126,7 @@ public class Alloy {
 	 * }
 	 * @return
 	 */
-	private Formula constraintsFromEcoreInstance() {
+	private Formula ecoreConstraints() {
 		final Formula DepDBApa = (softDB.union(softApache)).join(dependOn).no();
 		final Formula DepPHP = softApache.eq(softPHP.join(dependOn));
 		final Formula DepWeb = softPHP.eq(softWeb.join(dependOn));
@@ -114,7 +138,7 @@ public class Alloy {
 	}
 	
 	private Formula specification() {
-		return Formula.and(declarations(), constraintsFromEcoreInstance(), running());
+		return Formula.and(declarations(), ecoreConstraints(), running());
 	}
 	
 	/**
@@ -124,7 +148,7 @@ public class Alloy {
 	 * @return
 	 */
 	private Formula init() {
-		return ((tfirst.join(Software.join(installOn))).no());
+		return ((tfirst.join(modelSoftware.join(installOn))).no());
 	}
 	
 	/**
@@ -151,7 +175,7 @@ public class Alloy {
 		final Formula f3 = prev(tick).join(s1.join(installOn)).one().forAll(s1.oneOf(software.join(dependOn)));
 		final Formula f4 = prev(tick).join(s2.join(installOn)).one().forAll(s2.oneOf(software.join(connectTo)));
 		final Formula f51 = tick.join(s3.join(installOn)).eq(prev(tick).join(s3.join(installOn)));
-		final Formula f5 = f51.forAll(s3.oneOf(Software.difference(software)));
+		final Formula f5 = f51.forAll(s3.oneOf(modelSoftware.difference(software)));
 		
 		return Formula.and(f1, f2, f3, f4, f5);
 	}
@@ -168,7 +192,7 @@ public class Alloy {
 	private Formula goal() {
 		final Variable s = Variable.unary("s");
 		final Formula f11 = tlast.join(s.join(installOn)).one();
-		final Formula f1 = f11.forAll(s.oneOf(Software));
+		final Formula f1 = f11.forAll(s.oneOf(modelSoftware));
 		
 		final Variable s1 = Variable.unary("s1");
 		final Variable s2 = Variable.unary("s2");
@@ -176,7 +200,7 @@ public class Alloy {
 		//all s1, s2 : Software | (s1 != s2 and s1 in s2.dependOn) => s1.installOn[last] = s2.installOn[last]
 		final Formula f21 = s1.join(installOn).join(tlast).eq(s2.join(installOn).join(tlast));
 		final Formula f22 = (s1.eq(s2).not().and(s1.in(s2.join(dependOn)))).implies(f21);
-		final Formula f2 = f22.forAll(s1.oneOf(Software).and(s2.oneOf(Software)));
+		final Formula f2 = f22.forAll(s1.oneOf(modelSoftware).and(s2.oneOf(modelSoftware)));
 		
 		return Formula.and(f1, f2);
 	}
@@ -197,19 +221,14 @@ public class Alloy {
 		
 		final Formula f1 = installSoftware(soft, server, t);
 		
-		final Decls d1 = soft.oneOf(Software);
-		final Decls d2 = server.oneOf(Server);
-		final Decls d3 = t.oneOf(Time.difference(tfirst));
+		final Decls d1 = soft.oneOf(modelSoftware);
+		final Decls d2 = server.oneOf(modelServer);
+		final Decls d3 = t.oneOf(modelTime.difference(tfirst));
 		
 		final Formula f = f1.forSome(d2).forSome(d1).forAll(d3);
 		return Formula.and(init(), goal(), f);
 	}
 	
-	/**
-	 * @param serverNum
-	 * @param tickNum
-	 * @return
-	 */
 	private Bounds bounds(int serverNum, int tickNum) {
 		final List<String> atoms = new LinkedList<String>();
 		for (int i = 0; i < serverNum; ++i) {
@@ -219,7 +238,8 @@ public class Alloy {
 		for (int i = 0; i < tickNum; ++i) {
 			atoms.add("Tick" + i);
 		}
-		
+
+		//scope is 1
 		atoms.add("Apache");
 		atoms.add("PHP");
 		atoms.add("WebApp");
@@ -234,11 +254,11 @@ public class Alloy {
 		final TupleSet serverTuple = factory.range(factory.tuple("Server0"), factory.tuple(serverMax));
 		final TupleSet tickTuple = factory.range(factory.tuple("Tick0"), factory.tuple(tickMax));
 		final TupleSet softwareTuple = factory.range(factory.tuple("Apache"), factory.tuple("DB"));
-		bounds.bound(Server, serverTuple);
-		bounds.bound(Time, tickTuple);
+		bounds.bound(modelServer, serverTuple);
+		bounds.bound(modelTime, tickTuple);
 		
 		//one sig DB, Apache, PHP, Web extends Software {}
-		bounds.bound(Software, factory.range(factory.tuple("Apache"), factory.tuple("DB")));
+		bounds.bound(modelSoftware, factory.range(factory.tuple("Apache"), factory.tuple("DB")));
 		bounds.bound(softApache, factory.range(factory.tuple("Apache"), factory.tuple("Apache")));
 		bounds.bound(softDB, factory.range(factory.tuple("DB"), factory.tuple("DB")));
 		bounds.bound(softPHP, factory.range(factory.tuple("PHP"), factory.tuple("PHP")));
@@ -253,18 +273,58 @@ public class Alloy {
 		return bounds;
 	}
 	
-	public static void main(String[] args) {
-		int server = 3, tick = 5;
-		final Alloy model = new Alloy();
+	private Bounds bounds(int scope) {
+		return bounds(scope, scope);
+	}
+	
+	public Server getServerFromSoftware(String str) {
+		if (serverOfSoft == null || str == null || !serverOfSoft.containsKey(str)) {
+			System.err.println("Something wrong in get server");
+		}
+		return serverMap.get(serverOfSoft.get(str));
+	}
+	
+	public String[] getSolution() {
+		final int serverNum = serverMap.size();
+		final int tickNum = softwareList.size() + 1;
 		final Solver solver = new Solver();
 		solver.options().setSolver(SATFactory.MiniSat);
+		serverOfSoft = new HashMap<String, String>();
+		Map<String, Integer> tickMap = new HashMap<String, Integer>();
 		try {
-			final Formula result = model.specification();
-			System.out.println(result);
-			final Solution solution = solver.solve(result, model.bounds(server, tick));
-			System.out.println(solution);
+			final Formula result = specification();
+			final Solution solution = solver.solve(result, bounds(serverNum, tickNum));
+			if (solution.unsat()) {
+				System.err.println("Model is unsatisfiable");
+				System.exit(-1);
+			}
+			Instance instance = solution.instance();
+			Map<Relation, TupleSet> map = instance.relationTuples();
+			TupleSet ts = map.get(installOn);
+			Iterator <Tuple> it = ts.iterator();
+			while (it.hasNext()) {
+				Tuple tuple = it.next();
+				String s_name = (String) tuple.atom(0);
+				//get i from Tick i
+				int s_tick = Integer.parseInt(((String) tuple.atom(1)).substring(4));
+				String s_server = (String) tuple.atom(2);
+				if (serverOfSoft.containsKey(s_name)) {
+					tickMap.put(s_name, Math.min(s_tick, tickMap.get(s_name)));
+				} else {
+					serverOfSoft.put(s_name, s_server);
+					tickMap.put(s_name, s_tick);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		//sequence of software, the index is the order to install
+		String[] result = new String[tickNum - 1];
+		for (String str : serverOfSoft.keySet()) {
+//			System.out.println(str + "\t" + serverOfSoft.get(str));
+			result[tickMap.get(str) - 1] = str;
+		}
+		return result;
 	}
 }

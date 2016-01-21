@@ -1,12 +1,16 @@
 package moon.nju.edu.cn.main;
 
+import java.util.ArrayList;
+
 import moon.nju.edu.cn.chef.ChefTool;
 import moon.nju.edu.cn.demo.ApacheContainer;
 import moon.nju.edu.cn.demo.DemoFactory;
 import moon.nju.edu.cn.demo.MySQL;
 import moon.nju.edu.cn.demo.PHPContainer;
 import moon.nju.edu.cn.demo.Server;
+import moon.nju.edu.cn.demo.Software;
 import moon.nju.edu.cn.demo.WebApp;
+import moon.nju.edu.cn.kodkod.Model;
 
 public class Main {
 	/**
@@ -64,85 +68,100 @@ public class Main {
 	MySQL mysqlApp = factory.createMySQL();
 	WebApp webApp = factory.createWebApp();
 	
+	
+	
+	/**
+	 * fields
+	 */
+	ArrayList<Server> serverList = new ArrayList<Server>();
+	ArrayList<Software> softList = new ArrayList<Software>();
+	Model model;
 	/**
 	 * Initiation
 	 */
 	private void init() {
-		phpApp.getDependOn().add(apacheApp);
-		webApp.getDependOn().add(phpApp);
-		webApp.setConnectTo(mysqlApp);
-		
-		/**
-		 * @TODO
-		 * the software should not know where they should install on
-		 * this should be inferred by alloy
-		 */
-		webApp.setServers(server_1);
-		apacheApp.setServers(server_2);
-		phpApp.setServers(server_2);
-	}
-	
-	/**
-	 * load parameters from configuration file
-	 */
-	private void createInstance() {
 		server_1.setIP(serverIp_1);
 		server_1.setType(serverType_1);
 		server_1.setUsername(serverUser_1);
 		server_1.setPassword(serverPass_1);
+		serverList.add(server_1);
 		
 		server_2.setIP(serverIp_2);
 		server_2.setType(serverType_2);
 		server_2.setUsername(serverUser_2);
 		server_2.setPassword(serverPass_2);
+		serverList.add(server_2);
 		
 		apacheApp.setListenPort(apachePort);
 		apacheApp.setName(apacheName);
 		apacheApp.setVersion(apacheVersion);
+		softList.add(apacheApp);
 		
 		phpApp.setName(phpName);
 		phpApp.setVersion(phpVersion);
+		phpApp.getDependOn().add(apacheApp);
+		softList.add(phpApp);
 		
 		webApp.setName(webName);
 		webApp.setVersion(webVersion);
+		webApp.getDependOn().add(phpApp);
+		webApp.setConnectTo(mysqlApp);
+		softList.add(webApp);
 		
 		mysqlApp.setName(mysqlName);
 		mysqlApp.setVersion(mysqlVersion);
 		mysqlApp.setUsername(mysqlUser);
 		mysqlApp.setPassword(mysqlPass);
+		softList.add(mysqlApp);
 	}
 	
 	/**
 	 * validation and plan in Alloy
+	 * @return 
 	 */
-	private void check() {
-		
+	private String[] check() {
+		model = new Model(serverList, softList);
+		return model.getSolution();
 	}
 	
 	/**
 	 * setup according to the result of Alloy
 	 * @throws Exception 
 	 */
-	private void run() throws Exception {
+	private void run(String[] solution) throws Exception {
 		ChefTool chefTool = ChefTool.getInstance();
 
+		for (String str : solution) {
+			switch (str) {
+				case "PHP":
+					chefTool.install(model.getServerFromSoftware(str), "web_php");
+					break;
+				case "WebApp":
+					chefTool.install(model.getServerFromSoftware(str), "web_app");
+					break;
+				case "Apache":
+					chefTool.install(model.getServerFromSoftware(str), "web_apache");
+					break;
+				case "DB":
+					chefTool.install(model.getServerFromSoftware(str), "web_db");
+					break;
+				default: System.err.println("Wrong Software\n"); System.exit(-2);
+			}
+		}
+		
+		/*
 		chefTool.install(server_2, "web_apache");
 		chefTool.install(server_2, "web_php");
 		chefTool.install(server_2, "web_app");
 		
 		System.out.println("apache done!!!\n\n");
 		chefTool.install(server_1, "web_db");
+		*/
 	}
 	
 	public static void main(String[] args) throws Exception {
 		Main m = new Main();
 		m.init();
-		m.createInstance();
-		
-		/**
-		 * throw model in alloy to do constraint solving
-		 */
-		m.check();
-		m.run();
+		m.run(m.check());
 	}
 }

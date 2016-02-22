@@ -53,7 +53,7 @@ public class Main {
 	/**
 	 * parameters for WebApp
 	 */
-	private String webName = "MySQL";
+	private String webName = "WebApp";
 	private String webVersion = "1.0";
 	
 	
@@ -139,13 +139,13 @@ public class Main {
 				case "WebApp":
 					chefTool.install(model.getServerFromSoftware(str), "web_app");
 					break;
-				case "Apache":
+				case "Apache2":
 					chefTool.install(model.getServerFromSoftware(str), "web_apache");
 					break;
-				case "DB":
+				case "MySQL":
 					chefTool.install(model.getServerFromSoftware(str), "web_db");
 					break;
-				default: System.err.println("Wrong Software\n"); System.exit(-2);
+				default: System.err.println("Wrong Software:" + str + "\n"); System.exit(-2);
 			}
 		}
 		

@@ -24,10 +24,11 @@ import kodkod.instance.Universe;
 import moon.nju.edu.cn.demo.Server;
 import moon.nju.edu.cn.demo.Software;
 
+@SuppressWarnings("unused")
 public class Model {
 	//signatures
 	private Relation modelTime, modelSoftware, modelServer;
-	private Relation softApache, softWeb, softDB, softPHP;
+//	private Relation softApache, softWeb, softDB, softPHP;
 	
 	//fields
 	private Relation tfirst, tlast, tick;
@@ -41,11 +42,15 @@ public class Model {
 	 * store server information, server->demo.Server
 	 */
 	Map<String, Server> serverMap;
+	/**
+	 * map software to relation
+	 */
+	Map<Software, Relation> softRelation;
 	
 	/**
 	 * initialize signature and fields
 	 */
-	ArrayList<Software> softwareList;
+	List<Software> softwareList;
 	public Model(ArrayList<Server> serverList, ArrayList<Software> softList) {
 		modelTime = Relation.unary("Time");
 		tfirst = Relation.unary("first");
@@ -54,10 +59,18 @@ public class Model {
 		modelServer = Relation.unary("Server");
 		modelSoftware = Relation.unary("Software");
 		
-		softApache = Relation.unary("Apache");
-		softWeb = Relation.unary("Web");
-		softDB = Relation.unary("DB");
-		softPHP = Relation.unary("PHP");
+//		softApache = Relation.unary("Apache");
+//		softWeb = Relation.unary("Web");
+//		softDB = Relation.unary("DB");
+//		softPHP = Relation.unary("PHP");
+		
+		/**
+		 * get constraints from ecore model
+		 */
+		softRelation = new HashMap<Software, Relation>(softList.size());
+		for (int i = 0; i < softList.size(); ++i) {
+			softRelation.put(softList.get(i), Relation.unary(softList.get(i).getName()));
+		}
 		
 		installOn = Relation.ternary("installOn");
 		dependOn = Relation.binary("dependOn");
@@ -94,25 +107,42 @@ public class Model {
 	 * @return
 	 */
 	private Formula declarations() {
-		final Formula oneSig = Formula.and(softApache.one(), softDB.one(), softPHP.one(), softWeb.one());
-		//DB + PHP + Apache + Web in Software
-		final Formula softSub = softApache.union(softDB).union(softPHP).union(softWeb).eq(modelSoftware);
-		//no DB & PHP & Apache & Web
-		final Formula noDisj = softApache.intersection(softDB).intersection(softPHP).intersection(softWeb).no();
+//		//one sig
+//		final Formula oneSig = Formula.and(softApache.one(), softDB.one(), softPHP.one(), softWeb.one());
+//		//DB + PHP + Apache + Web = Software
+//		final Formula softSub = softApache.union(softDB).union(softPHP).union(softWeb).eq(modelSoftware);
+//		//no DB & PHP & Apache & Web
+//		final Formula noDisj = softApache.intersection(softDB).intersection(softPHP).intersection(softWeb).no();
+		
+		/**
+		 * get constraints from ecore model
+		 */
+		Formula oneSigConstraints = null;
+		Expression unionExpression = null;
+		Expression intersectionExpression = null;
+		for (Relation r : softRelation.values()) {
+			oneSigConstraints = oneSigConstraints == null ? r.one() : oneSigConstraints.and(r.one());
+			unionExpression = unionExpression == null ? r : unionExpression.union(r);
+			intersectionExpression = intersectionExpression == null ? r : intersectionExpression.intersection(r);
+		}
+		
+		final Formula unionConstraints = unionExpression.eq(modelSoftware);
+		final Formula intersectionConstraints = intersectionExpression.no();
+		final Formula softConstraints = Formula.and(oneSigConstraints, unionConstraints, intersectionConstraints);
+		
 		//fields about installOn, dependOn, connectTo
 		final Formula softInstallServer = installOn.in(modelSoftware.product(modelTime).product(modelServer));
 		final Formula softDepSoft = dependOn.in(modelSoftware.product(modelSoftware));
 		final Formula softConnSoft = connectTo.in(modelSoftware.product(modelSoftware));
 		//tick is a total ordering on time
 		final Formula totalOrder = tick.totalOrder(modelTime, tfirst, tlast);
-		return Formula.and(oneSig, softSub, noDisj, totalOrder,
+		return Formula.and(oneSigConstraints, unionConstraints, intersectionConstraints, totalOrder,
 				softConnSoft, softDepSoft, softInstallServer);
+//		return Formula.and(oneSig, softSub, noDisj, totalOrder,
+//				softConnSoft, softDepSoft, softInstallServer);
 	}
 	
 	/**
-	 * @TODO should combine the instance from parameter
-	 * Returns the constraints implicit in ecore instance
-	 * 
 	 * pred {
 	 *   no DB.dependOn
 	 *   no Apache.dependOn
@@ -127,14 +157,24 @@ public class Model {
 	 * @return
 	 */
 	private Formula ecoreConstraints() {
-		final Formula DepDBApa = (softDB.union(softApache)).join(dependOn).no();
-		final Formula DepPHP = softApache.eq(softPHP.join(dependOn));
-		final Formula DepWeb = softPHP.eq(softWeb.join(dependOn));
-		
-		final Formula Conn = (softDB.union(softApache).union(softPHP)).join(connectTo).no();
-		final Formula ConnWeb = softDB.eq(softWeb.join(connectTo));
-		
-		return Formula.and(DepDBApa, DepPHP, DepWeb, Conn, ConnWeb);
+		Formula result = Formula.TRUE;
+		for (Software soft : softRelation.keySet()) {
+			Expression e = softRelation.get(soft).join(dependOn);
+			Expression value = null;
+			for (Software dependSoft : soft.getDependOn())
+				value = value == null ? softRelation.get(dependSoft) : value.union(softRelation.get(dependSoft));
+			final Formula dependConstraints = value == null ? e.no() : e.eq(value);
+			result = result.and(dependConstraints);
+		}
+		return result;
+//		final Formula DepDBApa = (softDB.union(softApache)).join(dependOn).no();
+//		final Formula DepPHP = softApache.eq(softPHP.join(dependOn));
+//		final Formula DepWeb = softPHP.eq(softWeb.join(dependOn));
+//		
+//		final Formula Conn = (softDB.union(softApache).union(softPHP)).join(connectTo).no();
+//		final Formula ConnWeb = softDB.eq(softWeb.join(connectTo));
+//		
+//		return Formula.and(DepDBApa, DepPHP, DepWeb, Conn, ConnWeb);
 	}
 	
 	private Formula specification() {
@@ -229,6 +269,7 @@ public class Model {
 		return Formula.and(init(), goal(), f);
 	}
 	
+	
 	private Bounds bounds(int serverNum, int tickNum) {
 		final List<String> atoms = new LinkedList<String>();
 		for (int i = 0; i < serverNum; ++i) {
@@ -239,11 +280,15 @@ public class Model {
 			atoms.add("Tick" + i);
 		}
 
-		//scope is 1
-		atoms.add("Apache");
-		atoms.add("PHP");
-		atoms.add("WebApp");
-		atoms.add("DB");
+		for (Software soft : softwareList) {
+			atoms.add(soft.getName());
+		}
+			
+//		//scope is 1
+//		atoms.add("Apache");
+//		atoms.add("PHP");
+//		atoms.add("WebApp");
+//		atoms.add("DB");
 		
 		final Universe universe = new Universe(atoms);
 		final TupleFactory factory = universe.factory();
@@ -251,18 +296,26 @@ public class Model {
 		final String serverMax = "Server" + (serverNum - 1), 
 				tickMax = "Tick" + (tickNum - 1);
 		
+		final String softFirst = softwareList.get(0).getName();
+		final String softLast = softwareList.get(softwareList.size() - 1).getName();
+		
 		final TupleSet serverTuple = factory.range(factory.tuple("Server0"), factory.tuple(serverMax));
 		final TupleSet tickTuple = factory.range(factory.tuple("Tick0"), factory.tuple(tickMax));
-		final TupleSet softwareTuple = factory.range(factory.tuple("Apache"), factory.tuple("DB"));
+//		final TupleSet softwareTuple = factory.range(factory.tuple("Apache"), factory.tuple("DB"));
+		final TupleSet softwareTuple = factory.range(factory.tuple(softFirst), factory.tuple(softLast));
+		
 		bounds.bound(modelServer, serverTuple);
 		bounds.bound(modelTime, tickTuple);
 		
 		//one sig DB, Apache, PHP, Web extends Software {}
-		bounds.bound(modelSoftware, factory.range(factory.tuple("Apache"), factory.tuple("DB")));
-		bounds.bound(softApache, factory.range(factory.tuple("Apache"), factory.tuple("Apache")));
-		bounds.bound(softDB, factory.range(factory.tuple("DB"), factory.tuple("DB")));
-		bounds.bound(softPHP, factory.range(factory.tuple("PHP"), factory.tuple("PHP")));
-		bounds.bound(softWeb, factory.range(factory.tuple("WebApp"), factory.tuple("WebApp")));
+		bounds.bound(modelSoftware, factory.range(factory.tuple(softFirst), factory.tuple(softLast)));
+		for (Software soft : softRelation.keySet())
+			bounds.bound(softRelation.get(soft), factory.range(factory.tuple(soft.getName()), factory.tuple(soft.getName())));
+//		bounds.bound(modelSoftware, factory.range(factory.tuple("Apache"), factory.tuple("DB")));
+//		bounds.bound(softApache, factory.range(factory.tuple("Apache"), factory.tuple("Apache")));
+//		bounds.bound(softDB, factory.range(factory.tuple("DB"), factory.tuple("DB")));
+//		bounds.bound(softPHP, factory.range(factory.tuple("PHP"), factory.tuple("PHP")));
+//		bounds.bound(softWeb, factory.range(factory.tuple("WebApp"), factory.tuple("WebApp")));
 		
 		bounds.bound(tick, tickTuple.product(tickTuple));
 		bounds.bound(tfirst, tickTuple);
@@ -286,7 +339,7 @@ public class Model {
 	
 	public String[] getSolution() {
 		final int serverNum = serverMap.size();
-		final int tickNum = softwareList.size() + 1;
+		final int tickNum = softRelation.size() + 1;
 		final Solver solver = new Solver();
 		solver.options().setSolver(SATFactory.MiniSat);
 		serverOfSoft = new HashMap<String, String>();
@@ -297,6 +350,8 @@ public class Model {
 			if (solution.unsat()) {
 				System.err.println("Model is unsatisfiable");
 				System.exit(-1);
+			} else {
+				System.out.println(solution);
 			}
 			Instance instance = solution.instance();
 			Map<Relation, TupleSet> map = instance.relationTuples();

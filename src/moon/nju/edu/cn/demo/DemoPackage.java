@@ -76,13 +76,31 @@ public interface DemoPackage extends EPackage {
 	int SERVER__IP = 0;
 
 	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SERVER__CPU = 1;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SERVER__MEM = 2;
+
+	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SERVER__TYPE = 1;
+	int SERVER__TYPE = 3;
 
 	/**
 	 * The feature id for the '<em><b>Username</b></em>' attribute.
@@ -91,7 +109,7 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SERVER__USERNAME = 2;
+	int SERVER__USERNAME = 4;
 
 	/**
 	 * The feature id for the '<em><b>Password</b></em>' attribute.
@@ -100,7 +118,16 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SERVER__PASSWORD = 3;
+	int SERVER__PASSWORD = 5;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SERVER__NAME = 6;
 
 	/**
 	 * The number of structural features of the '<em>Server</em>' class.
@@ -109,7 +136,7 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SERVER_FEATURE_COUNT = 4;
+	int SERVER_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>Server</em>' class.
@@ -167,13 +194,31 @@ public interface DemoPackage extends EPackage {
 	int SOFTWARE__DEPEND_ON = 3;
 
 	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOFTWARE__CPU = 4;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOFTWARE__MEM = 5;
+
+	/**
 	 * The number of structural features of the '<em>Software</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOFTWARE_FEATURE_COUNT = 4;
+	int SOFTWARE_FEATURE_COUNT = 6;
 
 	/**
 	 * The number of operations of the '<em>Software</em>' class.
@@ -229,6 +274,24 @@ public interface DemoPackage extends EPackage {
 	 * @ordered
 	 */
 	int APACHE_CONTAINER__DEPEND_ON = SOFTWARE__DEPEND_ON;
+
+	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int APACHE_CONTAINER__CPU = SOFTWARE__CPU;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int APACHE_CONTAINER__MEM = SOFTWARE__MEM;
 
 	/**
 	 * The feature id for the '<em><b>Listen Port</b></em>' attribute.
@@ -304,6 +367,24 @@ public interface DemoPackage extends EPackage {
 	int PHP_CONTAINER__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHP_CONTAINER__CPU = SOFTWARE__CPU;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PHP_CONTAINER__MEM = SOFTWARE__MEM;
+
+	/**
 	 * The number of structural features of the '<em>PHP Container</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -366,6 +447,24 @@ public interface DemoPackage extends EPackage {
 	 * @ordered
 	 */
 	int WEB_APP__DEPEND_ON = SOFTWARE__DEPEND_ON;
+
+	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int WEB_APP__CPU = SOFTWARE__CPU;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int WEB_APP__MEM = SOFTWARE__MEM;
 
 	/**
 	 * The feature id for the '<em><b>Connect To</b></em>' reference.
@@ -441,6 +540,24 @@ public interface DemoPackage extends EPackage {
 	int MY_SQL__DEPEND_ON = SOFTWARE__DEPEND_ON;
 
 	/**
+	 * The feature id for the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MY_SQL__CPU = SOFTWARE__CPU;
+
+	/**
+	 * The feature id for the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MY_SQL__MEM = SOFTWARE__MEM;
+
+	/**
 	 * The feature id for the '<em><b>Password</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -499,6 +616,28 @@ public interface DemoPackage extends EPackage {
 	EAttribute getServer_IP();
 
 	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getCPU <em>CPU</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>CPU</em>'.
+	 * @see moon.nju.edu.cn.demo.Server#getCPU()
+	 * @see #getServer()
+	 * @generated
+	 */
+	EAttribute getServer_CPU();
+
+	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getMEM <em>MEM</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>MEM</em>'.
+	 * @see moon.nju.edu.cn.demo.Server#getMEM()
+	 * @see #getServer()
+	 * @generated
+	 */
+	EAttribute getServer_MEM();
+
+	/**
 	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getType <em>Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -530,6 +669,17 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getServer_Password();
+
+	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Server#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see moon.nju.edu.cn.demo.Server#getName()
+	 * @see #getServer()
+	 * @generated
+	 */
+	EAttribute getServer_Name();
 
 	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.Software <em>Software</em>}'.
@@ -584,6 +734,28 @@ public interface DemoPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getSoftware_DependOn();
+
+	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Software#getCPU <em>CPU</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>CPU</em>'.
+	 * @see moon.nju.edu.cn.demo.Software#getCPU()
+	 * @see #getSoftware()
+	 * @generated
+	 */
+	EAttribute getSoftware_CPU();
+
+	/**
+	 * Returns the meta object for the attribute '{@link moon.nju.edu.cn.demo.Software#getMEM <em>MEM</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>MEM</em>'.
+	 * @see moon.nju.edu.cn.demo.Software#getMEM()
+	 * @see #getSoftware()
+	 * @generated
+	 */
+	EAttribute getSoftware_MEM();
 
 	/**
 	 * Returns the meta object for class '{@link moon.nju.edu.cn.demo.ApacheContainer <em>Apache Container</em>}'.
@@ -711,6 +883,22 @@ public interface DemoPackage extends EPackage {
 		EAttribute SERVER__IP = eINSTANCE.getServer_IP();
 
 		/**
+		 * The meta object literal for the '<em><b>CPU</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SERVER__CPU = eINSTANCE.getServer_CPU();
+
+		/**
+		 * The meta object literal for the '<em><b>MEM</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SERVER__MEM = eINSTANCE.getServer_MEM();
+
+		/**
 		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -733,6 +921,14 @@ public interface DemoPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute SERVER__PASSWORD = eINSTANCE.getServer_Password();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SERVER__NAME = eINSTANCE.getServer_Name();
 
 		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.SoftwareImpl <em>Software</em>}' class.
@@ -775,6 +971,22 @@ public interface DemoPackage extends EPackage {
 		 * @generated
 		 */
 		EReference SOFTWARE__DEPEND_ON = eINSTANCE.getSoftware_DependOn();
+
+		/**
+		 * The meta object literal for the '<em><b>CPU</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SOFTWARE__CPU = eINSTANCE.getSoftware_CPU();
+
+		/**
+		 * The meta object literal for the '<em><b>MEM</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SOFTWARE__MEM = eINSTANCE.getSoftware_MEM();
 
 		/**
 		 * The meta object literal for the '{@link moon.nju.edu.cn.demo.impl.ApacheContainerImpl <em>Apache Container</em>}' class.

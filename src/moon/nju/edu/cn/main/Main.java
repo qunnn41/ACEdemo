@@ -84,34 +84,48 @@ public class Main {
 		server_1.setType(serverType_1);
 		server_1.setUsername(serverUser_1);
 		server_1.setPassword(serverPass_1);
+		server_1.setCPU(1);
+		server_1.setMEM(9);
+		server_1.setName("Ubuntu");
 		serverList.add(server_1);
 		
 		server_2.setIP(serverIp_2);
 		server_2.setType(serverType_2);
 		server_2.setUsername(serverUser_2);
 		server_2.setPassword(serverPass_2);
+		server_2.setCPU(4);
+		server_2.setMEM(9);
+		server_2.setName("CentOS");
 		serverList.add(server_2);
 		
 		apacheApp.setListenPort(apachePort);
 		apacheApp.setName(apacheName);
 		apacheApp.setVersion(apacheVersion);
+		apacheApp.setCPU(1);
+		apacheApp.setMEM(1);
 		softList.add(apacheApp);
 		
 		phpApp.setName(phpName);
 		phpApp.setVersion(phpVersion);
 		phpApp.getDependOn().add(apacheApp);
+		phpApp.setCPU(1);
+		phpApp.setMEM(1);
 		softList.add(phpApp);
 		
 		webApp.setName(webName);
 		webApp.setVersion(webVersion);
 		webApp.getDependOn().add(phpApp);
 		webApp.setConnectTo(mysqlApp);
+		webApp.setCPU(1);
+		webApp.setMEM(1);
 		softList.add(webApp);
 		
 		mysqlApp.setName(mysqlName);
 		mysqlApp.setVersion(mysqlVersion);
 		mysqlApp.setUsername(mysqlUser);
 		mysqlApp.setPassword(mysqlPass);
+		mysqlApp.setCPU(1);
+		mysqlApp.setMEM(1);
 		softList.add(mysqlApp);
 	}
 	
@@ -119,7 +133,7 @@ public class Main {
 	 * validation and plan in Alloy
 	 * @return 
 	 */
-	private String[] check() {
+	private String[][] check() {
 		model = new Model(serverList, softList);
 		return model.getSolution();
 	}
@@ -128,26 +142,28 @@ public class Main {
 	 * setup according to the result of Alloy
 	 * @throws Exception 
 	 */
-	private void run(String[] solution) throws Exception {
+	private void run(String[][] solution) throws Exception {
 		ChefTool chefTool = ChefTool.getInstance();
 
-		for (String str : solution) {
-			switch (str) {
-				case "PHP":
-					chefTool.install(model.getServerFromSoftware(str), "web_php");
-					break;
-				case "WebApp":
-					chefTool.install(model.getServerFromSoftware(str), "web_app");
-					break;
-				case "Apache2":
-					chefTool.install(model.getServerFromSoftware(str), "web_apache");
-					break;
-				case "MySQL":
-					chefTool.install(model.getServerFromSoftware(str), "web_db");
-					break;
-				default: System.err.println("Wrong Software:" + str + "\n"); System.exit(-2);
-			}
-		}
+		for (int i = 0; i < solution[0].length; ++i)
+			System.out.println(solution[0][i] + "\t" + solution[1][i]);
+//		for (String str : solution) {
+//			switch (str) {
+//				case "PHP":
+//					chefTool.install(model.getServerFromSoftware(str), "web_php");
+//					break;
+//				case "WebApp":
+//					chefTool.install(model.getServerFromSoftware(str), "web_app");
+//					break;
+//				case "Apache2":
+//					chefTool.install(model.getServerFromSoftware(str), "web_apache");
+//					break;
+//				case "MySQL":
+//					chefTool.install(model.getServerFromSoftware(str), "web_db");
+//					break;
+//				default: System.err.println("Wrong Software:" + str + "\n"); System.exit(-2);
+//			}
+//		}
 		
 		/*
 		chefTool.install(server_2, "web_apache");

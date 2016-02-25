@@ -151,7 +151,7 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getServer_Type() {
+	public EAttribute getServer_CPU() {
 		return (EAttribute)serverEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -160,7 +160,7 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getServer_Username() {
+	public EAttribute getServer_MEM() {
 		return (EAttribute)serverEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -169,8 +169,35 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getServer_Password() {
+	public EAttribute getServer_Type() {
 		return (EAttribute)serverEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getServer_Username() {
+		return (EAttribute)serverEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getServer_Password() {
+		return (EAttribute)serverEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getServer_Name() {
+		return (EAttribute)serverEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -216,6 +243,24 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 	 */
 	public EReference getSoftware_DependOn() {
 		return (EReference)softwareEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSoftware_CPU() {
+		return (EAttribute)softwareEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSoftware_MEM() {
+		return (EAttribute)softwareEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -320,15 +365,20 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 		// Create classes and their features
 		serverEClass = createEClass(SERVER);
 		createEAttribute(serverEClass, SERVER__IP);
+		createEAttribute(serverEClass, SERVER__CPU);
+		createEAttribute(serverEClass, SERVER__MEM);
 		createEAttribute(serverEClass, SERVER__TYPE);
 		createEAttribute(serverEClass, SERVER__USERNAME);
 		createEAttribute(serverEClass, SERVER__PASSWORD);
+		createEAttribute(serverEClass, SERVER__NAME);
 
 		softwareEClass = createEClass(SOFTWARE);
 		createEAttribute(softwareEClass, SOFTWARE__NAME);
 		createEAttribute(softwareEClass, SOFTWARE__VERSION);
 		createEReference(softwareEClass, SOFTWARE__SERVERS);
 		createEReference(softwareEClass, SOFTWARE__DEPEND_ON);
+		createEAttribute(softwareEClass, SOFTWARE__CPU);
+		createEAttribute(softwareEClass, SOFTWARE__MEM);
 
 		apacheContainerEClass = createEClass(APACHE_CONTAINER);
 		createEAttribute(apacheContainerEClass, APACHE_CONTAINER__LISTEN_PORT);
@@ -379,15 +429,20 @@ public class DemoPackageImpl extends EPackageImpl implements DemoPackage {
 		// Initialize classes, features, and operations; add parameters
 		initEClass(serverEClass, Server.class, "Server", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getServer_IP(), ecorePackage.getEString(), "IP", null, 0, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getServer_CPU(), ecorePackage.getEInt(), "CPU", null, 1, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getServer_MEM(), ecorePackage.getEInt(), "MEM", null, 1, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getServer_Type(), ecorePackage.getEString(), "type", null, 0, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getServer_Username(), ecorePackage.getEString(), "username", null, 0, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getServer_Password(), ecorePackage.getEString(), "password", null, 0, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getServer_Name(), ecorePackage.getEString(), "name", null, 0, 1, Server.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(softwareEClass, Software.class, "Software", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSoftware_Name(), ecorePackage.getEString(), "name", null, 0, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSoftware_Version(), ecorePackage.getEString(), "version", null, 0, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSoftware_Servers(), this.getServer(), null, "servers", null, 1, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSoftware_DependOn(), this.getSoftware(), null, "dependOn", null, 0, -1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSoftware_CPU(), ecorePackage.getEInt(), "CPU", null, 1, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSoftware_MEM(), ecorePackage.getEInt(), "MEM", null, 1, 1, Software.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(apacheContainerEClass, ApacheContainer.class, "ApacheContainer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getApacheContainer_ListenPort(), ecorePackage.getEInt(), "listenPort", null, 0, 1, ApacheContainer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

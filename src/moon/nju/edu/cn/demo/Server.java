@@ -14,9 +14,12 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link moon.nju.edu.cn.demo.Server#getIP <em>IP</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Server#getCPU <em>CPU</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Server#getMEM <em>MEM</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Server#getType <em>Type</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Server#getUsername <em>Username</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Server#getPassword <em>Password</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Server#getName <em>Name</em>}</li>
  * </ul>
  *
  * @see moon.nju.edu.cn.demo.DemoPackage#getServer()
@@ -49,6 +52,58 @@ public interface Server extends EObject {
 	 * @generated
 	 */
 	void setIP(String value);
+
+	/**
+	 * Returns the value of the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>CPU</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>CPU</em>' attribute.
+	 * @see #setCPU(int)
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getServer_CPU()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getCPU();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Server#getCPU <em>CPU</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>CPU</em>' attribute.
+	 * @see #getCPU()
+	 * @generated
+	 */
+	void setCPU(int value);
+
+	/**
+	 * Returns the value of the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>MEM</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>MEM</em>' attribute.
+	 * @see #setMEM(int)
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getServer_MEM()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getMEM();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Server#getMEM <em>MEM</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>MEM</em>' attribute.
+	 * @see #getMEM()
+	 * @generated
+	 */
+	void setMEM(int value);
 
 	/**
 	 * Returns the value of the '<em><b>Type</b></em>' attribute.
@@ -127,5 +182,31 @@ public interface Server extends EObject {
 	 * @generated
 	 */
 	void setPassword(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Name</em>' attribute.
+	 * @see #setName(String)
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getServer_Name()
+	 * @model
+	 * @generated
+	 */
+	String getName();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Server#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * @see #getName()
+	 * @generated
+	 */
+	void setName(String value);
 
 } // Server

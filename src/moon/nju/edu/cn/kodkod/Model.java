@@ -10,6 +10,8 @@ import java.util.Map;
 import kodkod.ast.Decls;
 import kodkod.ast.Expression;
 import kodkod.ast.Formula;
+import kodkod.ast.IntConstant;
+import kodkod.ast.IntExpression;
 import kodkod.ast.Relation;
 import kodkod.ast.Variable;
 import kodkod.engine.Solution;
@@ -32,16 +34,17 @@ public class Model {
 	
 	//fields
 	private Relation tfirst, tlast, tick;
-	private static Relation installOn, dependOn, connectTo;
+	private Relation installOn, dependOn, connectTo;
+	private Relation soft_CPU, soft_MEM, ser_CPU, ser_MEM, used_CPU, used_MEM;
 	
 	/**
 	 * store server list, software->server
 	 */
-	Map<String, String> serverOfSoft;
+	Map<Software, Server> serverOfSoft;
 	/**
 	 * store server information, server->demo.Server
 	 */
-	Map<String, Server> serverMap;
+	Map<Server, Relation> serverRelation;
 	/**
 	 * map software to relation
 	 */
@@ -51,14 +54,14 @@ public class Model {
 	 * initialize signature and fields
 	 */
 	List<Software> softwareList;
-	public Model(ArrayList<Server> serverList, ArrayList<Software> softList) {
+	List<Server> serverList;
+	public Model(ArrayList<Server> servList, ArrayList<Software> softList) {
 		modelTime = Relation.unary("Time");
 		tfirst = Relation.unary("first");
 		tlast = Relation.unary("last");
 		tick = Relation.binary("tick");
 		modelServer = Relation.unary("Server");
 		modelSoftware = Relation.unary("Software");
-		
 //		softApache = Relation.unary("Apache");
 //		softWeb = Relation.unary("Web");
 //		softDB = Relation.unary("DB");
@@ -75,14 +78,20 @@ public class Model {
 		installOn = Relation.ternary("installOn");
 		dependOn = Relation.binary("dependOn");
 		connectTo = Relation.binary("connectTo");
+		soft_CPU = Relation.binary("soft_CPU");
+		soft_MEM = Relation.binary("soft_MEM");
+		ser_CPU = Relation.binary("ser_CPU");
+		ser_MEM = Relation.binary("ser_MEM");
+		used_CPU = Relation.ternary("used_CPU");
+		used_MEM = Relation.ternary("used_MEM");
 		
-		serverMap = new HashMap<String, Server>();
-		for (int i = 0; i < serverList.size(); ++i) {
-			serverMap.put("Server" + i, serverList.get(i));
+		serverRelation = new HashMap<Server, Relation>();
+		for (int i = 0; i < servList.size(); ++i) {
+			serverRelation.put(servList.get(i), Relation.unary(servList.get(i).getName()));
 		}
 		
-		softwareList = new ArrayList<Software>();
-		softwareList.addAll(softList);
+		softwareList = new ArrayList<Software>(softList);
+		serverList = new ArrayList<Server>(servList);
 	}
 	
 	private Expression next(Expression e) {
@@ -97,8 +106,15 @@ public class Model {
 	 * Returns the constraints implicit in signature and field declarations.
 	 * open util/ordering[Tick]
 	 * sig Tick {}
-	 * sig Server {}
+	 * sig Server {
+	 *   cpu: Int,
+	 *   mem: Int,
+	 *   used_cpu: Tick -> Int,
+	 *   used_mem: Tick -> Int
+	 * }
 	 * abstract sig Software {
+	 *   cpu: Int,
+	 *   mem: Int,
 	 *   installOn: Tick -> lone Server,
 	 *   dependOn: set Software,
 	 *   connectTo: set Software
@@ -117,29 +133,45 @@ public class Model {
 		/**
 		 * get constraints from ecore model
 		 */
-		Formula oneSigConstraints = null;
-		Expression unionExpression = null;
-		Expression intersectionExpression = null;
+		Formula SoftOneSigConstraints = Formula.TRUE;
+		Expression SoftUnionExpression = null;
+		Expression SoftIntersectionExpression = null;
 		for (Relation r : softRelation.values()) {
-			oneSigConstraints = oneSigConstraints == null ? r.one() : oneSigConstraints.and(r.one());
-			unionExpression = unionExpression == null ? r : unionExpression.union(r);
-			intersectionExpression = intersectionExpression == null ? r : intersectionExpression.intersection(r);
+			SoftOneSigConstraints = SoftOneSigConstraints.and(r.one());
+			SoftUnionExpression = SoftUnionExpression == null ? r : SoftUnionExpression.union(r);
+			SoftIntersectionExpression = SoftIntersectionExpression == null ? r : SoftIntersectionExpression.intersection(r);
+		}
+		final Formula SoftUnionConstraints = SoftUnionExpression.eq(modelSoftware);
+		final Formula SoftIntersectionConstraints = SoftIntersectionExpression.no();
+		final Formula softConstraints = Formula.and(SoftOneSigConstraints, SoftUnionConstraints, SoftIntersectionConstraints);
+		
+		Formula ServerOneSigConstraints = Formula.TRUE;
+		Expression ServerUnionExpression = null;
+		Expression ServerIntersectionExpression = null;
+		for (Relation r : serverRelation.values()) {
+			ServerOneSigConstraints = ServerOneSigConstraints.and(r.one());
+			ServerUnionExpression = ServerUnionExpression == null ? r : ServerUnionExpression.union(r);
+			ServerIntersectionExpression = ServerIntersectionExpression == null ? r : ServerIntersectionExpression.intersection(r);
 		}
 		
-		final Formula unionConstraints = unionExpression.eq(modelSoftware);
-		final Formula intersectionConstraints = intersectionExpression.no();
-		final Formula softConstraints = Formula.and(oneSigConstraints, unionConstraints, intersectionConstraints);
-		
-		//fields about installOn, dependOn, connectTo
+		final Formula ServerUnionConstraints = ServerUnionExpression.eq(modelServer);
+		final Formula ServerIntersectionConstraints = ServerIntersectionExpression.no();
+		final Formula serverConstraints = Formula.and(ServerOneSigConstraints, ServerUnionConstraints, ServerIntersectionConstraints);
+
+		//fields about installOn, dependOn, connectTo, installing
 		final Formula softInstallServer = installOn.in(modelSoftware.product(modelTime).product(modelServer));
 		final Formula softDepSoft = dependOn.in(modelSoftware.product(modelSoftware));
 		final Formula softConnSoft = connectTo.in(modelSoftware.product(modelSoftware));
+		final Formula usedCPU = used_CPU.in(modelServer.product(modelTime).product(Expression.INTS));
+		final Formula usedMEM = used_MEM.in(modelServer.product(modelTime).product(Expression.INTS));
+		
+		final Formula CMconstraints = (soft_CPU.union(soft_MEM)).in(modelSoftware.product(Expression.INTS));
+		
 		//tick is a total ordering on time
 		final Formula totalOrder = tick.totalOrder(modelTime, tfirst, tlast);
-		return Formula.and(oneSigConstraints, unionConstraints, intersectionConstraints, totalOrder,
-				softConnSoft, softDepSoft, softInstallServer);
-//		return Formula.and(oneSig, softSub, noDisj, totalOrder,
-//				softConnSoft, softDepSoft, softInstallServer);
+		
+		return Formula.and(SoftOneSigConstraints, SoftUnionConstraints, SoftIntersectionConstraints, totalOrder,
+				softConnSoft, softDepSoft, softInstallServer, serverConstraints, usedCPU, usedMEM);
 	}
 	
 	/**
@@ -153,6 +185,9 @@ public class Model {
 	 *   no Apache.connectTo
 	 *   no PHP.connectTo
 	 *   Web.connectTo = DB
+	 *   
+	 *   all s : Server | all t : Tick | one s.cpu[t]
+	 *   all s : Server | all t : Tick | one s.mem[t]
 	 * }
 	 * @return
 	 */
@@ -165,8 +200,25 @@ public class Model {
 				value = value == null ? softRelation.get(dependSoft) : value.union(softRelation.get(dependSoft));
 			final Formula dependConstraints = value == null ? e.no() : e.eq(value);
 			result = result.and(dependConstraints);
+			
+			Formula cpu = softRelation.get(soft).join(soft_CPU).eq(IntConstant.constant(soft.getCPU()).toExpression());
+			Formula mem = softRelation.get(soft).join(soft_MEM).eq(IntConstant.constant(soft.getMEM()).toExpression());
+			result = result.and(cpu).and(mem);
 		}
-		return result;
+		
+		for (Server server : serverRelation.keySet()) {
+			Formula cpu = serverRelation.get(server).join(ser_CPU).eq(IntConstant.constant(server.getCPU()).toExpression());
+			Formula mem = serverRelation.get(server).join(ser_MEM).eq(IntConstant.constant(server.getMEM()).toExpression());
+			System.out.println(cpu + "\n" + mem);
+			result = result.and(cpu).and(mem);
+		}
+		
+		final Variable s = Variable.unary("s");
+		final Variable t = Variable.unary("t");
+		final Formula cpu = (t.join(s.join(used_CPU)).one()).forAll(s.oneOf(modelServer)).forAll(t.oneOf(modelTime));
+		final Formula mem = (t.join(s.join(used_MEM)).one()).forAll(s.oneOf(modelServer)).forAll(t.oneOf(modelTime));
+		
+		return Formula.and(result, cpu, mem);
 //		final Formula DepDBApa = (softDB.union(softApache)).join(dependOn).no();
 //		final Formula DepPHP = softApache.eq(softPHP.join(dependOn));
 //		final Formula DepWeb = softPHP.eq(softWeb.join(dependOn));
@@ -184,64 +236,104 @@ public class Model {
 	/**
 	 * pred init {
 	 *   no Software.installOn[first]
+	 *   one server.used_cpu[tick]
+	 *   one server.used_mem[tick]
 	 * }
 	 * @return
 	 */
 	private Formula init() {
-		return ((tfirst.join(modelSoftware.join(installOn))).no());
+		final Formula f1 = (tfirst.join(modelSoftware.join(installOn))).no();
+		
+		final Variable s1 = Variable.unary("s1");
+		final Variable s2 = Variable.unary("s2");
+		final Formula f2 = (tfirst.join(s1.join(used_CPU)).sum()
+				.eq(s1.join(ser_CPU).sum()))
+				.forAll(s1.oneOf(modelServer));
+		final Formula f3 = (tfirst.join(s2.join(used_MEM)).sum()
+				.eq(s2.join(ser_MEM).sum()))
+				.forAll(s2.oneOf(modelServer));
+		return Formula.and(f1, f2, f3);
 	}
 	
 	/**
-	 * pred install(software : Software, server : Server, tick : Tick) {
+	 * pred process(software : Software, server : Server, tick : Tick) {
 	 *   no software.installOn[tick.prev]
 	 *   software.installOn[tick] = server
+	 *   server.used_cpu[tick] = server.used_cpu[tick.prev] + software.cpu
+	 *   server.used_mem[tick] = server.used_cpu[tick.prev] + software.mem
 	 *   
 	 *   all s1 : software.dependOn | one s1.installOn[tick.prev]
 	 *   all s2 : software.connectTo | one s2.installOn[tick.prev]
 	 *   all s3 : Software - software | 
-	 *     s3.installOn[tick] = s3.installOn[tick.prev] 
+	 *     s3.installOn[tick] = s3.installOn[tick.prev]
+	 *     
+	 *   all s4 : Server - server | s4.used_cpu[tick] = s4.used_cpu[tick.prev] 
+	 *   							and s4.used_mem[tick] = s4.used_mem[tick.prev]
 	 * }
 	 * @return
 	 */
 	
-	private Formula installSoftware(Expression software, Expression server, Expression tick) {
+	private Formula process(Expression software, Expression server, Expression tick) {
 		final Formula f1 = prev(tick).join(software.join(installOn)).no();
 		final Formula f2 = server.eq(tick.join(software.join(installOn)));
 		
 		final Variable s1 = Variable.unary("s1");
 		final Variable s2 = Variable.unary("s2");
-		final Variable s3 = Variable.unary("s3");
-
 		final Formula f3 = prev(tick).join(s1.join(installOn)).one().forAll(s1.oneOf(software.join(dependOn)));
 		final Formula f4 = prev(tick).join(s2.join(installOn)).one().forAll(s2.oneOf(software.join(connectTo)));
+		
+		final Variable s3 = Variable.unary("s3");
 		final Formula f51 = tick.join(s3.join(installOn)).eq(prev(tick).join(s3.join(installOn)));
 		final Formula f5 = f51.forAll(s3.oneOf(modelSoftware.difference(software)));
 		
-		return Formula.and(f1, f2, f3, f4, f5);
+		final Formula f6 = tick.join(server.join(used_CPU)).sum()
+				.eq(prev(tick).join(server.join(used_CPU)).sum().minus(software.join(soft_CPU).sum()));
+		final Formula f8 = tick.join(server.join(used_MEM)).sum()
+				.eq(prev(tick).join(server.join(used_MEM)).sum().minus(software.join(soft_MEM).sum()));
+		
+		final Variable s4 = Variable.unary("s4");
+		final Formula f71 = tick.join(s4.join(used_CPU)).eq(prev(tick).join(s4.join(used_CPU)));
+		final Formula f7 = f71.forAll(s4.oneOf(modelServer.difference(server)));
+		
+		final Variable s5 = Variable.unary("s5");
+		final Formula f91 = tick.join(s5.join(used_MEM)).eq(prev(tick).join(s5.join(used_MEM)));
+		final Formula f9 = f91.forAll(s5.oneOf(modelServer.difference(server)));
+		
+		return Formula.and(f1, f2, f3, f4, f5, f6, f7, f8, f9);
 	}
 	
 	/**
 	 * pred goal {
 	 *   all s : Software | one s.installOn[last]
-	 *   
 	 *   all disj s1, s2 : Software | s1 in s2.dependOn implies s1.installOn[last] = s2.installOn[last]
+	 *   
+	 *   all s3 : Server | s3.used_mem[last] <= s3.mem
+	 *   all s3 : Server | s3.used_cpu[last] <= s3.cpu
 	 * }
 	 * @return
 	 */
 	
 	private Formula goal() {
+		//all s : Software | one s.installOn[last]
 		final Variable s = Variable.unary("s");
 		final Formula f11 = tlast.join(s.join(installOn)).one();
 		final Formula f1 = f11.forAll(s.oneOf(modelSoftware));
 		
+		//all s1, s2 : Software | (s1 != s2 and s1 in s2.dependOn) => s1.installOn[last] = s2.installOn[last]
 		final Variable s1 = Variable.unary("s1");
 		final Variable s2 = Variable.unary("s2");
-		
-		//all s1, s2 : Software | (s1 != s2 and s1 in s2.dependOn) => s1.installOn[last] = s2.installOn[last]
-		final Formula f21 = s1.join(installOn).join(tlast).eq(s2.join(installOn).join(tlast));
+		final Formula f21 = tlast.join(s1.join(installOn)).eq(tlast.join(s2.join(installOn)));
 		final Formula f22 = (s1.eq(s2).not().and(s1.in(s2.join(dependOn)))).implies(f21);
 		final Formula f2 = f22.forAll(s1.oneOf(modelSoftware).and(s2.oneOf(modelSoftware)));
 		
+		final Variable s3 = Variable.unary("s3");
+		final Formula f31 = (tlast.join(s3.join(used_CPU))).sum().gte(IntConstant.constant(0));
+		final Formula f3 = f31.forAll(s3.oneOf(modelServer));
+		
+		final Variable s4 = Variable.unary("s4");
+		final Formula f41 = (tlast.join(s4.join(used_MEM))).sum().gte(IntConstant.constant(0));
+		final Formula f4 = f41.forAll(s4.oneOf(modelServer));
+		System.out.println(f3 + "\n" + f4);
 		return Formula.and(f1, f2);
 	}
 	
@@ -259,7 +351,7 @@ public class Model {
 		final Variable server = Variable.unary("server");
 		final Variable t = Variable.unary("t");
 		
-		final Formula f1 = installSoftware(soft, server, t);
+		final Formula f1 = process(soft, server, t);
 		
 		final Decls d1 = soft.oneOf(modelSoftware);
 		final Decls d2 = server.oneOf(modelServer);
@@ -271,17 +363,23 @@ public class Model {
 	
 	
 	private Bounds bounds(int serverNum, int tickNum) {
-		final List<String> atoms = new LinkedList<String>();
-		for (int i = 0; i < serverNum; ++i) {
-			atoms.add("Server" + i);
-		}
-		
+		final List<Object> atoms = new LinkedList<Object>();
+		final int maxSize = 12;
+		final int minSize = 0;
+
 		for (int i = 0; i < tickNum; ++i) {
 			atoms.add("Tick" + i);
 		}
 
+		for (Server server : serverList) {
+			atoms.add(server.getName());
+		}
 		for (Software soft : softwareList) {
 			atoms.add(soft.getName());
+		}
+		
+		for (int i = minSize; i <= maxSize; ++i) {
+			atoms.add(Integer.valueOf(i));
 		}
 			
 //		//scope is 1
@@ -293,24 +391,31 @@ public class Model {
 		final Universe universe = new Universe(atoms);
 		final TupleFactory factory = universe.factory();
 		final Bounds bounds = new Bounds(universe);
-		final String serverMax = "Server" + (serverNum - 1), 
-				tickMax = "Tick" + (tickNum - 1);
+		final String tickMax = "Tick" + (tickNum - 1);
 		
 		final String softFirst = softwareList.get(0).getName();
 		final String softLast = softwareList.get(softwareList.size() - 1).getName();
+		final String serverFirst = serverList.get(0).getName();
+		final String serverLast = serverList.get(serverList.size() - 1).getName();
 		
-		final TupleSet serverTuple = factory.range(factory.tuple("Server0"), factory.tuple(serverMax));
+		final TupleSet serverTuple = factory.range(factory.tuple(serverFirst), factory.tuple(serverLast));
 		final TupleSet tickTuple = factory.range(factory.tuple("Tick0"), factory.tuple(tickMax));
 //		final TupleSet softwareTuple = factory.range(factory.tuple("Apache"), factory.tuple("DB"));
 		final TupleSet softwareTuple = factory.range(factory.tuple(softFirst), factory.tuple(softLast));
+		final TupleSet intTuple = factory.range(factory.tuple(Integer.valueOf(minSize)), factory.tuple(Integer.valueOf(maxSize)));
 		
-		bounds.bound(modelServer, serverTuple);
 		bounds.bound(modelTime, tickTuple);
 		
 		//one sig DB, Apache, PHP, Web extends Software {}
-		bounds.bound(modelSoftware, factory.range(factory.tuple(softFirst), factory.tuple(softLast)));
+		bounds.bound(modelSoftware, softwareTuple);
 		for (Software soft : softRelation.keySet())
-			bounds.bound(softRelation.get(soft), factory.range(factory.tuple(soft.getName()), factory.tuple(soft.getName())));
+			bounds.bound(softRelation.get(soft), 
+					factory.range(factory.tuple(soft.getName()), factory.tuple(soft.getName())));
+		bounds.bound(modelServer, serverTuple);
+		for (Server server : serverRelation.keySet())
+			bounds.bound(serverRelation.get(server), 
+					factory.range(factory.tuple(server.getName()), factory.tuple(server.getName())));
+		
 //		bounds.bound(modelSoftware, factory.range(factory.tuple("Apache"), factory.tuple("DB")));
 //		bounds.bound(softApache, factory.range(factory.tuple("Apache"), factory.tuple("Apache")));
 //		bounds.bound(softDB, factory.range(factory.tuple("DB"), factory.tuple("DB")));
@@ -323,6 +428,17 @@ public class Model {
 		bounds.bound(installOn, softwareTuple.product(tickTuple).product(serverTuple));
 		bounds.bound(dependOn, softwareTuple.product(softwareTuple));
 		bounds.bound(connectTo, softwareTuple.product(softwareTuple));
+		bounds.bound(soft_CPU, softwareTuple.product(intTuple));
+		bounds.bound(soft_MEM, softwareTuple.product(intTuple));
+		bounds.bound(ser_CPU, serverTuple.product(intTuple));
+		bounds.bound(ser_MEM, serverTuple.product(intTuple));
+		bounds.bound(used_CPU, serverTuple.product(tickTuple).product(intTuple));
+		bounds.bound(used_MEM, serverTuple.product(tickTuple).product(intTuple));
+		
+		//bounds for integer numbers
+		for (int i = minSize; i <= maxSize; ++i) {
+			bounds.boundExactly(i, factory.setOf(Integer.valueOf(i)));
+		}
 		return bounds;
 	}
 	
@@ -330,20 +446,14 @@ public class Model {
 		return bounds(scope, scope);
 	}
 	
-	public Server getServerFromSoftware(String str) {
-		if (serverOfSoft == null || str == null || !serverOfSoft.containsKey(str)) {
-			System.err.println("Something wrong in get server");
-		}
-		return serverMap.get(serverOfSoft.get(str));
-	}
-	
-	public String[] getSolution() {
-		final int serverNum = serverMap.size();
+	public String[][] getSolution() {
+		final int serverNum = serverRelation.size();
 		final int tickNum = softRelation.size() + 1;
 		final Solver solver = new Solver();
 		solver.options().setSolver(SATFactory.MiniSat);
-		serverOfSoft = new HashMap<String, String>();
+		serverOfSoft = new HashMap<Software, Server>();
 		Map<String, Integer> tickMap = new HashMap<String, Integer>();
+		String[][] process = new String[2][tickNum -1];
 		try {
 			final Formula result = specification();
 			final Solution solution = solver.solve(result, bounds(serverNum, tickNum));
@@ -357,29 +467,33 @@ public class Model {
 			Map<Relation, TupleSet> map = instance.relationTuples();
 			TupleSet ts = map.get(installOn);
 			Iterator <Tuple> it = ts.iterator();
+			String softName = null;
 			while (it.hasNext()) {
 				Tuple tuple = it.next();
-				String s_name = (String) tuple.atom(0);
-				//get i from Tick i
-				int s_tick = Integer.parseInt(((String) tuple.atom(1)).substring(4));
-				String s_server = (String) tuple.atom(2);
-				if (serverOfSoft.containsKey(s_name)) {
-					tickMap.put(s_name, Math.min(s_tick, tickMap.get(s_name)));
-				} else {
-					serverOfSoft.put(s_name, s_server);
-					tickMap.put(s_name, s_tick);
+//				System.out.println(tuple);
+				//get new one
+				if (softName == null || !softName.equals(tuple.atom(0))) {
+					softName = (String) tuple.atom(0);
+					int tick = Integer.parseInt(((String) tuple.atom(1)).substring(4));
+					process[0][tick - 1] = softName;
+					process[1][tick - 1] = (String) tuple.atom(2);
 				}
 			}
+//			System.out.println("================CPU======================");
+//			ts = map.get(used_CPU);
+//			it = ts.iterator();
+//			while (it.hasNext()) {
+//				System.out.println(it.next());
+//			}
+//			System.out.println("================MEM======================");
+//			ts = map.get(used_MEM);
+//			it = ts.iterator();
+//			while (it.hasNext()) {
+//				System.out.println(it.next());
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		//sequence of software, the index is the order to install
-		String[] result = new String[tickNum - 1];
-		for (String str : serverOfSoft.keySet()) {
-//			System.out.println(str + "\t" + serverOfSoft.get(str));
-			result[tickMap.get(str) - 1] = str;
-		}
-		return result;
+		return process;
 	}
 }

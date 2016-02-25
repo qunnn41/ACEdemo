@@ -8,15 +8,20 @@
       ecorePackage="demo.ecore#/">
     <genClasses ecoreClass="demo.ecore#//Server">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/IP"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/CPU"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/MEM"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/username"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/password"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Server/name"/>
     </genClasses>
     <genClasses ecoreClass="demo.ecore#//Software">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/version"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//Software/servers"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference demo.ecore#//Software/dependOn"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/CPU"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//Software/MEM"/>
     </genClasses>
     <genClasses ecoreClass="demo.ecore#//ApacheContainer">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute demo.ecore#//ApacheContainer/listenPort"/>

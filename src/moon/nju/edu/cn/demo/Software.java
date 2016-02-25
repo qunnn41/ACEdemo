@@ -19,6 +19,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link moon.nju.edu.cn.demo.Software#getVersion <em>Version</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Software#getServers <em>Servers</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.Software#getDependOn <em>Depend On</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Software#getCPU <em>CPU</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.Software#getMEM <em>MEM</em>}</li>
  * </ul>
  *
  * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware()
@@ -119,5 +121,57 @@ public interface Software extends EObject {
 	 * @generated
 	 */
 	EList<Software> getDependOn();
+
+	/**
+	 * Returns the value of the '<em><b>CPU</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>CPU</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>CPU</em>' attribute.
+	 * @see #setCPU(int)
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware_CPU()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getCPU();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Software#getCPU <em>CPU</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>CPU</em>' attribute.
+	 * @see #getCPU()
+	 * @generated
+	 */
+	void setCPU(int value);
+
+	/**
+	 * Returns the value of the '<em><b>MEM</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>MEM</em>' attribute list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>MEM</em>' attribute.
+	 * @see #setMEM(int)
+	 * @see moon.nju.edu.cn.demo.DemoPackage#getSoftware_MEM()
+	 * @model required="true"
+	 * @generated
+	 */
+	int getMEM();
+
+	/**
+	 * Sets the value of the '{@link moon.nju.edu.cn.demo.Software#getMEM <em>MEM</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>MEM</em>' attribute.
+	 * @see #getMEM()
+	 * @generated
+	 */
+	void setMEM(int value);
 
 } // Software

@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
@@ -32,6 +31,8 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getServers <em>Servers</em>}</li>
  *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getDependOn <em>Depend On</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getCPU <em>CPU</em>}</li>
+ *   <li>{@link moon.nju.edu.cn.demo.impl.SoftwareImpl#getMEM <em>MEM</em>}</li>
  * </ul>
  *
  * @generated
@@ -96,6 +97,46 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 	 * @ordered
 	 */
 	protected EList<Software> dependOn;
+
+	/**
+	 * The default value of the '{@link #getCPU() <em>CPU</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCPU()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int CPU_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getCPU() <em>CPU</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCPU()
+	 * @generated
+	 * @ordered
+	 */
+	protected int cpu = CPU_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getMEM() <em>MEM</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMEM()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int MEM_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getMEM() <em>MEM</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMEM()
+	 * @generated
+	 * @ordered
+	 */
+	protected int mem = MEM_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -213,6 +254,48 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public int getCPU() {
+		return cpu;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCPU(int newCPU) {
+		int oldCPU = cpu;
+		cpu = newCPU;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.SOFTWARE__CPU, oldCPU, cpu));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int getMEM() {
+		return mem;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMEM(int newMEM) {
+		int oldMEM = mem;
+		mem = newMEM;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DemoPackage.SOFTWARE__MEM, oldMEM, mem));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -225,6 +308,10 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 				return basicGetServers();
 			case DemoPackage.SOFTWARE__DEPEND_ON:
 				return getDependOn();
+			case DemoPackage.SOFTWARE__CPU:
+				return getCPU();
+			case DemoPackage.SOFTWARE__MEM:
+				return getMEM();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -251,6 +338,12 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 				getDependOn().clear();
 				getDependOn().addAll((Collection<? extends Software>)newValue);
 				return;
+			case DemoPackage.SOFTWARE__CPU:
+				setCPU((Integer)newValue);
+				return;
+			case DemoPackage.SOFTWARE__MEM:
+				setMEM((Integer)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -275,6 +368,12 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 			case DemoPackage.SOFTWARE__DEPEND_ON:
 				getDependOn().clear();
 				return;
+			case DemoPackage.SOFTWARE__CPU:
+				setCPU(CPU_EDEFAULT);
+				return;
+			case DemoPackage.SOFTWARE__MEM:
+				setMEM(MEM_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -295,6 +394,10 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 				return servers != null;
 			case DemoPackage.SOFTWARE__DEPEND_ON:
 				return dependOn != null && !dependOn.isEmpty();
+			case DemoPackage.SOFTWARE__CPU:
+				return cpu != CPU_EDEFAULT;
+			case DemoPackage.SOFTWARE__MEM:
+				return mem != MEM_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -313,6 +416,10 @@ public class SoftwareImpl extends MinimalEObjectImpl.Container implements Softwa
 		result.append(name);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", CPU: ");
+		result.append(cpu);
+		result.append(", MEM: ");
+		result.append(mem);
 		result.append(')');
 		return result.toString();
 	}

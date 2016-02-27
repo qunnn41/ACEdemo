@@ -85,7 +85,7 @@ public class Main {
 		server_1.setUsername(serverUser_1);
 		server_1.setPassword(serverPass_1);
 		server_1.setCPU(1);
-		server_1.setMEM(9);
+		server_1.setMEM(1);
 		server_1.setName("Ubuntu");
 		serverList.add(server_1);
 		
@@ -93,8 +93,8 @@ public class Main {
 		server_2.setType(serverType_2);
 		server_2.setUsername(serverUser_2);
 		server_2.setPassword(serverPass_2);
-		server_2.setCPU(4);
-		server_2.setMEM(9);
+		server_2.setCPU(3);
+		server_2.setMEM(4);
 		server_2.setName("CentOS");
 		serverList.add(server_2);
 		

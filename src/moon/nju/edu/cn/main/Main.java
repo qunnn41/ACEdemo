@@ -94,7 +94,7 @@ public class Main {
 		server_2.setUsername(serverUser_2);
 		server_2.setPassword(serverPass_2);
 		server_2.setCPU(3);
-		server_2.setMEM(4);
+		server_2.setMEM(3);
 		server_2.setName("CentOS");
 		serverList.add(server_2);
 		
@@ -133,20 +133,21 @@ public class Main {
 	 * validation and plan in Alloy
 	 * @return 
 	 */
-	private String[][] check() {
+	private String[][] deployment;
+	private void check() {
 		model = new Model(serverList, softList);
-		return model.getSolution();
+		deployment = model.getSolution();
 	}
 	
 	/**
 	 * setup according to the result of Alloy
 	 * @throws Exception 
 	 */
-	private void run(String[][] solution) throws Exception {
+	private void run() throws Exception {
 		ChefTool chefTool = ChefTool.getInstance();
 
-		for (int i = 0; i < solution[0].length; ++i)
-			System.out.println(solution[0][i] + "\t" + solution[1][i]);
+		for (int i = 0; i < deployment[0].length; ++i)
+			System.out.println(deployment[0][i] + "\t" + deployment[1][i]);
 //		for (String str : solution) {
 //			switch (str) {
 //				case "PHP":
@@ -178,6 +179,7 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		Main m = new Main();
 		m.init();
-		m.run(m.check());
+		m.check();
+		m.run();
 	}
 }

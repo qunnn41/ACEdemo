@@ -85,7 +85,7 @@ public class ChefTool {
 		List<String> runlist = null;
 		Iterable<? extends CookbookVersion> cookbookVersions = chefService.listCookbookVersions();
 		for (CookbookVersion cookbook : cookbookVersions) {
-			if (recipe.equals(cookbook.getCookbookName())) {
+			if (recipe.equals(cookbook.getCookbookName()) || cookbook.getCookbookName().startsWith(recipe)) {
 				runlist = new RunListBuilder().addRecipe(recipe).build();
 			}
 		}
@@ -144,6 +144,94 @@ public class ChefTool {
     		res = result.getExitStatus();
     	} catch (Throwable t) {
     		System.out.println("Exception: " + t.getMessage());
+    	} finally {
+    		sshClient.disconnect();
+    		System.out.println("SSH closed.");
+    	}
+    	
+    	return res;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		ChefTool chefTool = ChefTool.getInstance();
+//		chefTool.install("192.168.1.51", "vagrant", "vagrant", "apache_hadoop");
+		chefTool.install("192.168.1.14", "vagrant", "vagrant", "lamp_php");
+	}
+	
+	/**
+	 * test for method install
+	 * @param IP
+	 * @param username
+	 * @param password
+	 * @param recipe
+	 * @return
+	 */
+	public int install(String IP, String username, String password, String recipe) {
+		System.out.printf("install %s on %s\n", recipe, IP);
+		List<String> runlist = null;
+		Iterable<? extends CookbookVersion> cookbookVersions = chefService.listCookbookVersions();
+		for (CookbookVersion cookbook : cookbookVersions) {
+			//add start with to coordinate hadoop
+			if (recipe.equals(cookbook.getCookbookName()) || cookbook.getCookbookName().startsWith(recipe)) {
+				runlist = new RunListBuilder().addRecipe(recipe).build();
+			}
+		}
+		
+		if (runlist == null) {
+			System.out.printf("Recipe %s is not avaliable on chef server\n", recipe);
+			return -1;
+		}
+		
+    	BootstrapConfig bootstrapConfig = BootstrapConfig.builder()
+    			.runList(runlist)
+    			.sslVerifyMode(SSLVerifyMode.NONE)
+    			.build();
+    	
+    	/**
+    	 * @TODO change identifier of each node, here we use server.getIP()
+    	 */
+    	chefService.updateBootstrapConfigForGroup(IP, bootstrapConfig);
+    	Statement bootstrap = chefService.createBootstrapScriptForGroup(IP);
+    	
+    	SshClient sshClient = sshFactory.create(HostAndPort.fromParts(IP, 22), 
+    			LoginCredentials.builder().authenticateSudo(true)
+    			.user(username).password(password)
+    			.build());
+    	sshClient.connect();
+
+    	int res = -1;
+    	try {
+    		String rawScript = bootstrap.render(OsFamily.UNIX);
+    		
+    		//skip chef installation and change mode about file and folder
+    		rawScript = rawScript.substring(rawScript.indexOf("cat"));
+    		rawScript = "sudo chmod 777 /etc/chef \n" + rawScript;
+    		rawScript = "sudo chmod 777 /etc/chef/client.rb \n" + rawScript;
+    		
+    		rawScript = rawScript.replace("chef-client", "sudo chef-client");
+    		rawScript = rawScript.replace("cat > ", "sudo cat > ");
+    		
+    		System.out.println("Raw script rendered.\n\n" + rawScript + "\n\n");
+    		System.out.println("Bootstrap script executed...");
+    		
+    		/**
+    		 * the shell might not succeed during one process, that is the chef problem
+    		 * u can run "sudo chef-client -j /etc/chef/first-boot.json" until it is successful
+    		 */
+    		ExecResponse result = sshClient.exec(rawScript);
+    		System.out.println("result:\n\n" + result.toString());
+    		
+    		/**
+    		 * another solution
+    		while (result.getExitStatus() != 0) {
+    			result = sshClient.exec(rawScript);
+        		System.out.println(result.toString());
+    		}
+    		*/
+    		res = result.getExitStatus();
+    	} catch (Throwable t) {
+    		t.printStackTrace();
+//    		System.out.println("Exception: " + t.getMessage());
     	} finally {
     		sshClient.disconnect();
     		System.out.println("SSH closed.");

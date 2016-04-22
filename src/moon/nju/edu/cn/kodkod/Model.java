@@ -410,7 +410,7 @@ public class Model {
 		final int serverNum = serverRelation.size();
 		final int tickNum = softRelation.size() + 1;
 		final Solver solver = new Solver();
-		solver.options().setSolver(SATFactory.MiniSat);
+		solver.options().setSolver(SATFactory.DefaultSAT4J);
 		serverOfSoft = new HashMap<Software, Server>();
 		String[][] process = new String[2][tickNum -1];
 		try {

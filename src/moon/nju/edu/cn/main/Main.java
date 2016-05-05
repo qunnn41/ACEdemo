@@ -2,7 +2,7 @@ package moon.nju.edu.cn.main;
 
 import java.util.ArrayList;
 
-import moon.nju.edu.cn.chef.ChefTool;
+//import moon.nju.edu.cn.chef.ChefTool;
 import moon.nju.edu.cn.demo.ApacheContainer;
 import moon.nju.edu.cn.demo.DemoFactory;
 import moon.nju.edu.cn.demo.MySQL;
@@ -144,7 +144,7 @@ public class Main {
 	 * @throws Exception 
 	 */
 	private void run() throws Exception {
-		ChefTool chefTool = ChefTool.getInstance();
+//		ChefTool chefTool = ChefTool.getInstance();
 
 		for (int i = 0; i < deployment[0].length; ++i)
 			System.out.println(deployment[0][i] + "\t" + deployment[1][i]);

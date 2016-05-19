@@ -2,6 +2,8 @@ package moon.nju.edu.cn.main;
 
 import java.util.ArrayList;
 
+import kodkod.ast.Relation;
+
 //import moon.nju.edu.cn.chef.ChefTool;
 import moon.nju.edu.cn.demo.ApacheContainer;
 import moon.nju.edu.cn.demo.DemoFactory;
@@ -12,7 +14,7 @@ import moon.nju.edu.cn.demo.Software;
 import moon.nju.edu.cn.demo.WebApp;
 import moon.nju.edu.cn.kodkod.Model;
 
-public class Main {
+public class EACmain {
 	/**
 	 * parameters for server_1
 	 */
@@ -79,7 +81,12 @@ public class Main {
 	/**
 	 * Initiation
 	 */
-	private void init() {
+	public void init() {
+//		System.out.println(1);
+		Relation relation = Relation.unary("ss");
+		relation.hashCode();
+		
+//		System.out.println(2);
 		server_1.setIP(serverIp_1);
 		server_1.setType(serverType_1);
 		server_1.setUsername(serverUser_1);
@@ -134,7 +141,7 @@ public class Main {
 	 * @return 
 	 */
 	private String[][] deployment;
-	private void check() {
+	public void check() {
 		model = new Model(serverList, softList);
 		deployment = model.getSolution();
 	}
@@ -143,7 +150,7 @@ public class Main {
 	 * setup according to the result of Alloy
 	 * @throws Exception 
 	 */
-	private void run() throws Exception {
+	public void run() throws Exception {
 //		ChefTool chefTool = ChefTool.getInstance();
 
 		for (int i = 0; i < deployment[0].length; ++i)
@@ -177,7 +184,7 @@ public class Main {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Main m = new Main();
+		EACmain m = new EACmain();
 		m.init();
 		m.check();
 		m.run();

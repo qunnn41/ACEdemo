@@ -6,10 +6,11 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: moon.nju.edu.cn.demo,
  moon.nju.edu.cn.demo.impl,
- moon.nju.edu.cn.demo.util
+ moon.nju.edu.cn.demo.util,
+ moon.nju.edu.cn.main
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy

@@ -2,9 +2,6 @@ package moon.nju.edu.cn.main;
 
 import java.util.ArrayList;
 
-import kodkod.ast.Relation;
-
-//import moon.nju.edu.cn.chef.ChefTool;
 import moon.nju.edu.cn.demo.ApacheContainer;
 import moon.nju.edu.cn.demo.DemoFactory;
 import moon.nju.edu.cn.demo.MySQL;
@@ -82,11 +79,6 @@ public class EACmain {
 	 * Initiation
 	 */
 	public void init() {
-//		System.out.println(1);
-		Relation relation = Relation.unary("ss");
-		relation.hashCode();
-		
-//		System.out.println(2);
 		server_1.setIP(serverIp_1);
 		server_1.setType(serverType_1);
 		server_1.setUsername(serverUser_1);
